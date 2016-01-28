@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.yekong.androidsupport.DetailActivity">
+
+    <!-- layout_height should NOT be wrap_content, or CollapsingToolbarLayout won't work -->
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="256dp"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <!--
+        layout_scrollFlags
+            scroll
+                - If you want the view to scroll along the content
+            enterAlwaysCollapsed
+                - When your view has declared a minHeight and you use this flag,
+                  your View will only enter at its minimum height (i.e., ‘collapsed’),
+                  only re-expanding to its full height when the scrolling view has reached it’s top
+            exitUntilCollapsed
+                - View will scroll off until it is collapsed (its minHeight) and stay like that
+            enterAlways
+                - this flag ensures that any downward scroll will cause this view to become visible
+        app:contentScrim
+            - automatically changed into plain color in collapsed mode by declaring attribute
+        app:collapsedTitleTextAppearance/app:expandedTitleTextAppearance
+            - change text's appearance in collapsed and expanded state
+        app:expandedTitleMarginStart/app:expandedTitleMarginEnd
+            /app:expandedTitleMargin/app:expandedTitleMarginBottom
+            - change the position of title text in expanded state
+        -->
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="48dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <!--
+            layout_collapseMode
+                - Image now just moves along with content scrolling which is a little bit too wooden.
+                  We could make it more elegant with parallax mode
+            layout_collapseParallaxMultiplier
+                - 0.0 - 1.0
+            -->
+            <ImageView
+                android:id="@+id/appBarImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.5" />
+
+            <!--
+            layout_collapseMode
+                pin - toolbar icons will be always on top of the screen
+            -->
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_detail" />
+
+    <!--
+    android:src
+        - define a Resource ID of icon you want (40dp transparent png file is recommended)
+    app:fabSize
+        - "normal" means the standard 56dp button used in most of the case,
+          "mini" is an another choice that will change its width to 40dp.
+    app:elevation
+        - idle state's shadow depth
+    app:pressedTranslationZ
+        - press state's shadow depth
+    app:backgroundTint
+        - FAB uses the accent color but you could override
+    -->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@android:drawable/ic_dialog_info"
+        app:backgroundTint="#df0084ff"
+        app:elevation="6dp"
+        app:fabSize="normal"
+        app:pressedTranslationZ="12dp" />
+
+</android.support.design.widget.CoordinatorLayout>
