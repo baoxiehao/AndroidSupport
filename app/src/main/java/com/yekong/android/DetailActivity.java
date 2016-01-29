@@ -1,4 +1,4 @@
-package com.yekong.androidsupport;
+package com.yekong.android;
 
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -14,45 +14,52 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class DetailActivity extends AppCompatActivity {
+
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
+
+    @Bind(R.id.collapsingToolbarLayout)
+    CollapsingToolbarLayout mToolbarLayout;
+
+    @Bind(R.id.appBarImage)
+    ImageView mAppBarImage;
+
+    @Bind(R.id.fab)
+    FloatingActionButton mFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        initToolbar();
-        initFloatingActionButton();
+        ButterKnife.bind(this);
+        initView();
     }
 
-    private void initToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    private void initView() {
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Title is gone in the wind after wrapping Toolbar with CollapsingToolbarLayout.
         // We have to set it manually through setTitle.
-        CollapsingToolbarLayout collapsingToolbarLayout =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout);
-        collapsingToolbarLayout.setTitle(getString(R.string.app_name));
+        mToolbarLayout.setTitle(getString(R.string.app_name));
 
-        ImageView imageView = (ImageView) findViewById(R.id.appBarImage);
-        Glide.with(this).load(Cheeses.getRandomCheeseDrawable()).centerCrop().into(imageView);
+        Glide.with(this).load(Cheeses.getRandomCheeseDrawable()).centerCrop().into(mAppBarImage);
     }
 
-    private void initFloatingActionButton() {
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(DetailActivity.this, "Action done", Toast.LENGTH_SHORT).show();
-                            }
-                        }).show();
-            }
-        });
+    @OnClick(R.id.fab)
+    void initFab() {
+        Snackbar.make(mFab, "Replace with your own action", Snackbar.LENGTH_LONG)
+                .setAction("Action", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(DetailActivity.this, "Action done", Toast.LENGTH_SHORT).show();
+                    }
+                }).show();
     }
 
     @Override

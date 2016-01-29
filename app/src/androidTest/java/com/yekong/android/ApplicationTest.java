@@ -1,4 +1,4 @@
-package com.yekong.androidsupport;
+package com.yekong.android;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

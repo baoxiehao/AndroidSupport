@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.yekong.androidsupport;
+package com.yekong.android;
 
 import java.util.Random;
 

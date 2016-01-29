@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.yekong.androidsupport.DetailActivity">
+    tools:context="com.yekong.android.DetailActivity">
 
     <!-- layout_height should NOT be wrap_content, or CollapsingToolbarLayout won't work -->
     <android.support.design.widget.AppBarLayout
