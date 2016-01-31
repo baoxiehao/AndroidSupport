@@ -15,3 +15,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+ -keepclassmembers public class * extends com.skocken.efficientadapter.lib.viewholder.EfficientViewHolder {
+     public <init>(...);
+ }

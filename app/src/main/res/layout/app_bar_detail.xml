@@ -6,10 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.yekong.android.DetailActivity">
+    tools:context=".ui.DetailActivity">
 
     <!-- layout_height should NOT be wrap_content, or CollapsingToolbarLayout won't work -->
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="256dp"
         android:fitsSystemWindows="true"
@@ -59,7 +60,7 @@
                 android:scaleType="centerCrop"
                 android:src="@mipmap/ic_launcher"
                 app:layout_collapseMode="parallax"
-                app:layout_collapseParallaxMultiplier="0.5" />
+                app:layout_collapseParallaxMultiplier="0.25" />
 
             <!--
             layout_collapseMode

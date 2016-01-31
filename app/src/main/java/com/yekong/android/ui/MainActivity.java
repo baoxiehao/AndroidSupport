@@ -1,4 +1,4 @@
-package com.yekong.android;
+package com.yekong.android.ui;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,7 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.yekong.android.ui.FragmentAdapter;
+import com.yekong.android.R;
+import com.yekong.android.mvp.MainListFragment;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -64,9 +65,9 @@ public class MainActivity extends AppCompatActivity
     private void initViewPager() {
         if (mViewPager != null) {
             FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
-            adapter.addFragment(new CheeseListFragment(), "Category 1");
-            adapter.addFragment(new CheeseListFragment(), "Category 2");
-            adapter.addFragment(new CheeseListFragment(), "Category 3");
+            adapter.addFragment(MainListFragment.newInstance(), "All");
+            adapter.addFragment(MainListFragment.newInstance(), "Favor");
+            adapter.addFragment(MainListFragment.newInstance(), "Find");
             mViewPager.setAdapter(adapter);
 
             TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
