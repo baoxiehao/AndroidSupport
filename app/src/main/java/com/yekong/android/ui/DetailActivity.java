@@ -1,5 +1,6 @@
 package com.yekong.android.ui;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -10,12 +11,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.thefinestartist.finestwebview.FinestWebView;
+import com.kennyc.view.MultiStateView;
 import com.yekong.android.R;
+import com.yekong.android.util.UseCase;
 import com.yekong.rss.RssEntry;
 
 import butterknife.Bind;
@@ -38,6 +44,9 @@ public class DetailActivity extends AppCompatActivity {
 
     @Bind(R.id.fab)
     FloatingActionButton mFab;
+
+    @Bind(R.id.multiStateView)
+    MultiStateView mMultiStateView;
 
     @Bind(R.id.markdownView)
     CustomMarkdownView mMarkdownView;
@@ -79,6 +88,26 @@ public class DetailActivity extends AppCompatActivity {
 
         Glide.with(this).load(R.drawable.app_bar).centerCrop().into(mAppBarImage);
 
+        WebViewClient webViewClient = new WebViewClient() {
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                mMultiStateView.setViewState(MultiStateView.VIEW_STATE_LOADING);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                mMultiStateView.setViewState(MultiStateView.VIEW_STATE_CONTENT);
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                mMultiStateView.setViewState(MultiStateView.VIEW_STATE_ERROR);
+            }
+        };
+        mMarkdownView.setWebViewClient(webViewClient);
         mMarkdownView.loadUrl(mEntry.getLink());
     }
 
@@ -96,7 +125,7 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.detail, menu);
         return true;
     }
 
@@ -111,7 +140,7 @@ public class DetailActivity extends AppCompatActivity {
         if (id == android.R.id.home) {
             finish();
         } else if (id == R.id.action_browser) {
-            new FinestWebView.Builder(this).show(mEntry.getLink());
+            UseCase.showWebView(this, mEntry.getLink());
             return true;
         }
 

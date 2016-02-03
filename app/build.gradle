@@ -30,6 +30,7 @@ dependencies {
 
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.skocken:efficientadapter:2.0.3'
+    compile 'com.kennyc:multistateview:1.1'
     compile 'us.feras.mdv:markdownview:1.1.0'
     compile 'com.thefinestartist:finestwebview:1.1.6'
 

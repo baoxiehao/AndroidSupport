@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--ScrollView was not designed to work with CoordinatorLayout, so use NestedScrollView instead -->
+<?xml version="1.0" encoding="utf-8"?><!--ScrollView was not designed to work with CoordinatorLayout, so use NestedScrollView instead -->
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -7,9 +6,19 @@
     android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+    <com.kennyc.view.MultiStateView
+        android:id="@+id/multiStateView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:msv_emptyView="@layout/mvp_empty_view"
+        app:msv_errorView="@layout/mvp_loading_view"
+        app:msv_loadingView="@layout/mvp_loading_view"
+        app:msv_viewState="loading">
+
         <com.yekong.android.ui.CustomMarkdownView
             android:id="@+id/markdownView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    <!--</RelativeLayout>-->
+    </com.kennyc.view.MultiStateView>
+
 </android.support.v4.widget.NestedScrollView>

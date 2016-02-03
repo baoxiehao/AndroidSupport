@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">RSS阅读器</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">设置</string>
+    <string name="action_browser">浏览器</string>
+
+    <string name="mvp_empty_tip">没有数据</string>
+    <string name="mvp_error_tip">出错点击重试</string>
+
+    <string name="web_refresh">刷新</string>
+    <string name="web_share">分享</string>
+    <string name="web_copy_link">复制链接</string>
+    <string name="web_open_with">其他打开方式</string>
+</resources>

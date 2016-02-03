@@ -58,7 +58,6 @@ public class RssEntry {
             Date date = sdf.parse(pubDate);
             this.pubDate = sdf.format(date);
         } catch (ParseException e) {
-            e.printStackTrace();
             this.pubDate = pubDate;
         }
     }

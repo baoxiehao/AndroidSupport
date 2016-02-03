@@ -22,16 +22,16 @@ public class MainListPresenter extends MvpBasePresenter<MainListView> {
     @Override
     public void attachView(MainListView view) {
         super.attachView(view);
-        Log.d("bao", "attach");
+        Log.d("bao", "attach main list");
     }
 
     @Override
     public void detachView(boolean retainInstance) {
         super.detachView(retainInstance);
-        Log.d("bao", "detach");
+        Log.d("bao", "detach main list");
     }
 
-    public void loadMainList(final String query, final boolean pullToRefresh) {
+    public void loadMainList(final boolean pullToRefresh) {
         RssReader.parse(RssTest.getRandomRss())
                 .doOnSubscribe(new Action0() {
                     @Override

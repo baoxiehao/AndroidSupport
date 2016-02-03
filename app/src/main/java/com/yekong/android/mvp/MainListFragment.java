@@ -1,6 +1,5 @@
 package com.yekong.android.mvp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -10,11 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.hannesdorfmann.mosby.mvp.lce.MvpLceFragment;
+import com.hannesdorfmann.mosby.mvp.viewstate.lce.LceViewState;
+import com.hannesdorfmann.mosby.mvp.viewstate.lce.MvpLceViewStateFragment;
+import com.hannesdorfmann.mosby.mvp.viewstate.lce.data.RetainingLceViewState;
 import com.skocken.efficientadapter.lib.adapter.EfficientAdapter;
 import com.skocken.efficientadapter.lib.adapter.EfficientRecyclerAdapter;
-import com.yekong.android.ui.DetailActivity;
 import com.yekong.android.R;
+import com.yekong.android.util.UseCase;
 import com.yekong.rss.RssEntry;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import butterknife.ButterKnife;
 /**
  * Created by baoxiehao on 16/1/29.
  */
-public class MainListFragment extends MvpLceFragment<SwipeRefreshLayout,
+public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout,
         List<RssEntry>, MainListView, MainListPresenter>
         implements MainListView, SwipeRefreshLayout.OnRefreshListener,
         EfficientAdapter.OnItemClickListener {
@@ -38,6 +39,13 @@ public class MainListFragment extends MvpLceFragment<SwipeRefreshLayout,
 
     public static MainListFragment newInstance() {
         return new MainListFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // Enable retaining presenter / view state
+        setRetainInstance(true);
     }
 
     @Nullable
@@ -74,12 +82,22 @@ public class MainListFragment extends MvpLceFragment<SwipeRefreshLayout,
 
     @Override
     public void loadData(boolean pullToRefresh) {
-        this.presenter.loadMainList("爱", pullToRefresh);
+        this.presenter.loadMainList(pullToRefresh);
     }
 
     @Override
     public void onRefresh() {
         loadData(true);
+    }
+
+    @Override
+    public LceViewState<List<RssEntry>, MainListView> createViewState() {
+        return new RetainingLceViewState<>();
+    }
+
+    @Override
+    public List<RssEntry> getData() {
+        return mAdapter == null ? null : mAdapter.getObjects();
     }
 
     @Override
@@ -102,13 +120,11 @@ public class MainListFragment extends MvpLceFragment<SwipeRefreshLayout,
 
     @Override
     protected String getErrorMessage(Throwable e, boolean pullToRefresh) {
-        return null;
+        return "Error";
     }
 
     @Override
     public void onItemClick(EfficientAdapter adapter, View view, Object object, int position) {
-        Intent intent = new Intent(getContext(), DetailActivity.class);
-        intent.putExtra("entry", ((RssEntry) object).toString());
-        getContext().startActivity(intent);
+        UseCase.showWebView(getContext(), ((RssEntry) object).getLink());
     }
 }
