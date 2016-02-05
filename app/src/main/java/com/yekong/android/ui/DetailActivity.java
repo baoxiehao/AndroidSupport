@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.kennyc.view.MultiStateView;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
@@ -31,6 +32,8 @@ import com.yekong.android.R;
 import com.yekong.android.util.ResUtils;
 import com.yekong.android.util.UseCase;
 import com.yekong.rss.RssEntry;
+
+import net.qiujuer.genius.app.BlurKit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -87,19 +90,28 @@ public class DetailActivity extends AppCompatActivity {
         // We have to set it manually through setTitle.
         mCollapsingToolbarLayout.setTitle(mEntry.getTitle());
 
-        Glide.with(this).load(ResUtils.getAppBarDrawableId()).centerCrop().into(mAppBarImage);
-
+        initAppBarImage();
         initFabActions();
         initWebView();
+    }
+
+    private void initAppBarImage() {
+        final int resId = ResUtils.getAppBarDrawableId();
+        Glide.with(this).load(resId)
+                .asBitmap()
+                .centerCrop()
+                .into(new BitmapImageViewTarget(mAppBarImage) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        mAppBarImage.setImageBitmap(BlurKit.blur(resource, 10, true));
+                    }
+                });
     }
 
     private void initWebView() {
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, final int verticalOffset) {
-                if (mFabMenu.isOpen()) {
-                    mFabMenu.close(true);
-                }
                 final boolean appBarCollapsed = mPrevVerticalOffset > verticalOffset && verticalOffset == -550;
                 mPrevVerticalOffset = verticalOffset;
                 if (appBarCollapsed) {
@@ -144,7 +156,7 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.setType("plain/text");
+                intent.setType("text/html");
                 intent.putExtra(Intent.EXTRA_TEXT, mEntry.getLink());
                 startActivity(intent);
                 mFabMenu.close(false);
