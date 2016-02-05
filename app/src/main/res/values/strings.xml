@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Your RSS</string>
+    <string name="app_name">SimpleRSS</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -8,10 +8,24 @@
     <string name="action_browser">Browser</string>
 
     <string name="mvp_empty_tip">No data</string>
-    <string name="mvp_error_tip">Error occurred, click to retry</string>
+    <string name="mvp_error_tip">Click to retry</string>
+
+    <string name="tab_all">All</string>
+    <string name="tab_new">New</string>
+    <string name="tab_star">Star</string>
+
+    <string name="nav_author">Elixon</string>
+    <string name="nav_desc">https://baoxiehao.github.com</string>
+
+    <string name="nav_menu_rss">RSS</string>
+    <string name="nav_menu_gallery">Gallery</string>
+    <string name="nav_menu_share">Share</string>
+    <string name="nav_menu_setting">Setting</string>
 
     <string name="web_refresh">Refresh</string>
     <string name="web_share">Share</string>
     <string name="web_copy_link">Copy Link</string>
     <string name="web_open_with">Open with</string>
+
+    <string name="toast_copy_to_clipboard">Copied to clipboard</string>
 </resources>

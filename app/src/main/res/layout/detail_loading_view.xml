@@ -3,15 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/errorView"
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:id="@+id/loadingView"
+        style="@style/Widget.MaterialProgressBar.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@drawable/button_bg"
-        android:gravity="center"
-        android:text="@string/mvp_error_tip"
-        android:textColor="@color/icon"
-        android:textSize="16sp" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="160dp"
+        android:indeterminate="true" />
 
 </FrameLayout>

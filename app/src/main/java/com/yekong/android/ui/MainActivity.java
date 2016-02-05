@@ -65,9 +65,9 @@ public class MainActivity extends AppCompatActivity
     private void initViewPager() {
         if (mViewPager != null) {
             FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
-            adapter.addFragment(MainListFragment.newInstance(), "All");
-            adapter.addFragment(MainListFragment.newInstance(), "Favor");
-            adapter.addFragment(MainListFragment.newInstance(), "Find");
+            adapter.addFragment(MainListFragment.newInstance(), getString(R.string.tab_all));
+            adapter.addFragment(MainListFragment.newInstance(), getString(R.string.tab_new));
+            adapter.addFragment(MainListFragment.newInstance(), getString(R.string.tab_star));
             mViewPager.setAdapter(adapter);
 
             TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -123,18 +123,10 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
+        if (id == R.id.nav_rss) {
         } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
         } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.nav_setting) {
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.START);

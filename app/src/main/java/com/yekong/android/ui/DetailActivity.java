@@ -1,6 +1,11 @@
 package com.yekong.android.ui;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -20,6 +25,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.kennyc.view.MultiStateView;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.yekong.android.R;
 import com.yekong.android.util.UseCase;
 import com.yekong.rss.RssEntry;
@@ -29,6 +36,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class DetailActivity extends AppCompatActivity {
+
+    private static final String TAG = "DetailActivity";
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
@@ -50,6 +59,8 @@ public class DetailActivity extends AppCompatActivity {
 
     @Bind(R.id.markdownView)
     CustomMarkdownView mMarkdownView;
+
+    FloatingActionMenu mFabMenu;
 
     RssEntry mEntry;
     int mPrevVerticalOffset = Integer.MAX_VALUE;
@@ -75,9 +86,19 @@ public class DetailActivity extends AppCompatActivity {
         // We have to set it manually through setTitle.
         mCollapsingToolbarLayout.setTitle(mEntry.getTitle());
 
+        Glide.with(this).load(R.drawable.app_bar).centerCrop().into(mAppBarImage);
+
+        initWebView();
+        initFabActions();
+    }
+
+    private void initWebView() {
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, final int verticalOffset) {
+                if (mFabMenu.isOpen()) {
+                    mFabMenu.close(true);
+                }
                 final boolean appBarCollapsed = mPrevVerticalOffset > verticalOffset && verticalOffset == -550;
                 mPrevVerticalOffset = verticalOffset;
                 if (appBarCollapsed) {
@@ -85,8 +106,6 @@ public class DetailActivity extends AppCompatActivity {
                 }
             }
         });
-
-        Glide.with(this).load(R.drawable.app_bar).centerCrop().into(mAppBarImage);
 
         WebViewClient webViewClient = new WebViewClient() {
             @Override
@@ -109,6 +128,65 @@ public class DetailActivity extends AppCompatActivity {
         };
         mMarkdownView.setWebViewClient(webViewClient);
         mMarkdownView.loadUrl(mEntry.getLink());
+    }
+
+    private void initFabActions() {
+        FloatingActionMenu.Builder fabBuilder = new FloatingActionMenu.Builder(this);
+        initFabAction(fabBuilder, R.drawable.fab_action_refresh_bg, new Runnable() {
+            @Override
+            public void run() {
+                mMarkdownView.reload();
+                mFabMenu.close(true);
+            }
+        });
+        initFabAction(fabBuilder, R.drawable.fab_action_share_bg, new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("plain/text");
+                intent.putExtra(Intent.EXTRA_TEXT, mEntry.getLink());
+                startActivity(intent);
+                mFabMenu.close(false);
+            }
+        });
+        initFabAction(fabBuilder, R.drawable.fab_action_copy_bg, new Runnable() {
+            @Override
+            public void run() {
+                ClipboardManager clipBoard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newUri(getContentResolver(), mEntry.getTitle(), Uri.parse(mEntry.getLink()));
+                clipBoard.setPrimaryClip(clipData);
+                Toast.makeText(DetailActivity.this, R.string.toast_copy_to_clipboard, Toast.LENGTH_SHORT).show();
+                mFabMenu.close(true);
+            }
+        });
+        initFabAction(fabBuilder, R.drawable.fab_action_open_bg, new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(mEntry.getLink()));
+                startActivity(intent);
+                mFabMenu.close(false);
+            }
+        });
+        mFabMenu = fabBuilder.attachTo(mFab).build();
+    }
+
+    private void initFabAction(FloatingActionMenu.Builder fabBuilder, int resId, final Runnable runnable) {
+        ImageView icon = new ImageView(this);
+        icon.setImageResource(resId);
+        SubActionButton button = new SubActionButton.Builder(this)
+                .setContentView(icon)
+//                    .setBackgroundDrawable(getResources().getDrawable(resId))
+                .build();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                runnable.run();
+            }
+        });
+        fabBuilder.addSubActionView(button,
+                getResources().getDimensionPixelSize(R.dimen.fab_action_size),
+                getResources().getDimensionPixelSize(R.dimen.fab_action_size));
     }
 
     @OnClick(R.id.fab)

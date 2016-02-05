@@ -11,6 +11,7 @@ public class RssTest {
     private static final Random RANDOM = new Random();
 
     private static final String[] URLS = new String[] {
+            "http://www.ifanr.com/feed",
             "http://www.androiddesignpatterns.com/feed.atom",
             "http://www.androidweekly.cn/rss/",
             "http://likaiwen.cn/feed",

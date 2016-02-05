@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,10 +31,13 @@ import butterknife.ButterKnife;
 public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout,
         List<RssEntry>, MainListView, MainListPresenter>
         implements MainListView, SwipeRefreshLayout.OnRefreshListener,
-        EfficientAdapter.OnItemClickListener {
+        EfficientAdapter.OnItemClickListener, View.OnClickListener {
 
     @Bind(R.id.recyclerView)
     RecyclerView mRecyclerView;
+
+    @Bind(R.id.contentView)
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     EfficientRecyclerAdapter<RssEntry> mAdapter;
 
@@ -59,12 +63,16 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(view);
         this.contentView.setOnRefreshListener(this);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        this.errorView.setOnClickListener(this);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView); // bind failed?
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.contentView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.primaryDark);
         mAdapter = new EfficientRecyclerAdapter<>(R.layout.list_item_main,
                 MainListViewHolder.class, new ArrayList<RssEntry>());
         mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
+        showLoading(false);
         loadData(false);
     }
 
@@ -82,7 +90,7 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
 
     @Override
     public void loadData(boolean pullToRefresh) {
-        this.presenter.loadMainList(pullToRefresh);
+        this.presenter.loadMainList(getContext(), pullToRefresh);
     }
 
     @Override
@@ -103,28 +111,42 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
     @Override
     public void showContent() {
         super.showContent();
+        Log.d("baoyibao", "showContent");
         this.contentView.setRefreshing(false);
     }
 
     @Override
     public void showLoading(boolean pullToRefresh) {
         super.showLoading(pullToRefresh);
+        Log.d("baoyibao", "showLoading");
         this.contentView.setRefreshing(pullToRefresh);
     }
 
     @Override
     public void showError(Throwable e, boolean pullToRefresh) {
         super.showError(e, pullToRefresh);
+        Log.d("baoyibao", "showError");
         this.contentView.setRefreshing(false);
     }
 
     @Override
     protected String getErrorMessage(Throwable e, boolean pullToRefresh) {
-        return "Error";
+        return getString(R.string.mvp_error_tip);
     }
 
     @Override
     public void onItemClick(EfficientAdapter adapter, View view, Object object, int position) {
-        UseCase.showWebView(getContext(), ((RssEntry) object).getLink());
+        UseCase.showDetailActivity(getContext(), (RssEntry) object);
+//        UseCase.showWebView(getContext(), ((RssEntry) object).getLink());
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.errorView:
+                showLoading(false);
+                loadData(false);
+                break;
+        }
     }
 }

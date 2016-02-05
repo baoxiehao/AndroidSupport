@@ -26,8 +26,8 @@ public class UseCase {
                 .stringResShareVia(R.string.web_share)
                 .stringResCopyLink(R.string.web_copy_link)
                 .stringResOpenWith(R.string.web_open_with)
-                .setCustomAnimations(R.anim.slide_left_in, R.anim.slide_right_out,
-                        R.anim.slide_right_out, R.anim.slide_left_in)
+                .setCustomAnimations(R.anim.activity_open_enter, R.anim.activity_open_exit,
+                        R.anim.activity_close_enter, R.anim.activity_close_exit)
                 .show(url);
     }
 }

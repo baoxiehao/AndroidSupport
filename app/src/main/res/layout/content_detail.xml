@@ -11,8 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:msv_emptyView="@layout/mvp_empty_view"
-        app:msv_errorView="@layout/mvp_loading_view"
-        app:msv_loadingView="@layout/mvp_loading_view"
+        app:msv_errorView="@layout/mvp_error_view"
+        app:msv_loadingView="@layout/detail_loading_view"
         app:msv_viewState="loading">
 
         <com.yekong.android.ui.CustomMarkdownView

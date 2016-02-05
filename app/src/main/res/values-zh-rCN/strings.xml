@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RSS阅读器</string>
+    <string name="app_name">RSS阅器</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -8,10 +8,24 @@
     <string name="action_browser">浏览器</string>
 
     <string name="mvp_empty_tip">没有数据</string>
-    <string name="mvp_error_tip">出错点击重试</string>
+    <string name="mvp_error_tip">点击重试</string>
+
+    <string name="tab_all">全部</string>
+    <string name="tab_new">最近</string>
+    <string name="tab_star">收藏</string>
+
+    <string name="nav_author">Elixon</string>
+    <string name="nav_desc">https://baoxiehao.github.com</string>
+
+    <string name="nav_menu_rss">源</string>
+    <string name="nav_menu_gallery">图库</string>
+    <string name="nav_menu_share">分享</string>
+    <string name="nav_menu_setting">设置</string>
 
     <string name="web_refresh">刷新</string>
     <string name="web_share">分享</string>
     <string name="web_copy_link">复制链接</string>
     <string name="web_open_with">其他打开方式</string>
+
+    <string name="toast_copy_to_clipboard">已复制到粘贴板</string>
 </resources>

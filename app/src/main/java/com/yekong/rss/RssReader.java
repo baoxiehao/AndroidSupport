@@ -1,5 +1,8 @@
 package com.yekong.rss;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -12,15 +15,33 @@ public class RssReader {
             @Override
             public void call(Subscriber<? super RssHandler> subscriber) {
                 try {
+                    final boolean usesUrlConn = false;
                     SAXParserFactory factory = SAXParserFactory.newInstance();
                     SAXParser saxParser = factory.newSAXParser();
-                    // Creates a new RssHandler which will do all the parsing.
-                    RssHandler handler = new RssHandler();
-                    // Pass SaxParser the RssHandler that was created.
-                    saxParser.parse(url, handler);
-                    if (!subscriber.isUnsubscribed()) {
-                        subscriber.onNext(handler);
-                        subscriber.onCompleted();
+                    HttpURLConnection conn = null;
+                    try {
+                        // Creates a new RssHandler which will do all the parsing.
+                        RssHandler handler = new RssHandler();
+                        if (usesUrlConn) {
+                            URL connUrl = new URL(url);
+                            conn = (HttpURLConnection) connUrl.openConnection();
+                            conn.setRequestProperty("Connection", "Keep-Alive");
+                            conn.setRequestProperty("Charset", "UTF-8");
+                            conn.setRequestProperty("User-Agent",
+                                    "Mozilla/4.9 (compatible; MSIE 5.0; Windows NT; DigExt)");
+                            // Pass SaxParser the RssHandler that was created.
+                            saxParser.parse(conn.getInputStream(), handler);
+                        } else {
+                            saxParser.parse(url, handler);
+                        }
+                        if (!subscriber.isUnsubscribed()) {
+                            subscriber.onNext(handler);
+                            subscriber.onCompleted();
+                        }
+                    } finally {
+                        if (conn != null) {
+                            conn.disconnect();
+                        }
                     }
                 } catch (Exception e) {
                     if (!subscriber.isUnsubscribed()) {

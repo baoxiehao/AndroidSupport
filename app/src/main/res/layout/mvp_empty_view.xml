@@ -9,10 +9,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:drawablePadding="16dp"
+        android:drawableLeft="@android:drawable/ic_dialog_alert"
         android:gravity="center"
         android:padding="16dp"
         android:text="@string/mvp_empty_tip"
-        android:textColor="#656565"
-        android:textSize="20sp" />
+        android:textColor="@color/primaryText"
+        android:textSize="24sp" />
 
 </FrameLayout>
