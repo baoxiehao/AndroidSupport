@@ -28,6 +28,7 @@ import com.kennyc.view.MultiStateView;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.yekong.android.R;
+import com.yekong.android.util.ResUtils;
 import com.yekong.android.util.UseCase;
 import com.yekong.rss.RssEntry;
 
@@ -86,10 +87,10 @@ public class DetailActivity extends AppCompatActivity {
         // We have to set it manually through setTitle.
         mCollapsingToolbarLayout.setTitle(mEntry.getTitle());
 
-        Glide.with(this).load(R.drawable.app_bar).centerCrop().into(mAppBarImage);
+        Glide.with(this).load(ResUtils.getAppBarDrawableId()).centerCrop().into(mAppBarImage);
 
-        initWebView();
         initFabActions();
+        initWebView();
     }
 
     private void initWebView() {
