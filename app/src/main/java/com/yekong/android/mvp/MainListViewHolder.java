@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.skocken.efficientadapter.lib.viewholder.EfficientViewHolder;
 import com.yekong.android.R;
-import com.yekong.rss.RssEntry;
+import com.yekong.android.rss.RssEntry;
 
 /**
  * Created by baoxiehao on 16/1/30.

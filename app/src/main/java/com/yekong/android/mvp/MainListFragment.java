@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +15,9 @@ import com.hannesdorfmann.mosby.mvp.viewstate.lce.data.RetainingLceViewState;
 import com.skocken.efficientadapter.lib.adapter.EfficientAdapter;
 import com.skocken.efficientadapter.lib.adapter.EfficientRecyclerAdapter;
 import com.yekong.android.R;
+import com.yekong.android.rss.RssEntry;
+import com.yekong.android.util.Logger;
 import com.yekong.android.util.UseCase;
-import com.yekong.rss.RssEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +32,8 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
         List<RssEntry>, MainListView, MainListPresenter>
         implements MainListView, SwipeRefreshLayout.OnRefreshListener,
         EfficientAdapter.OnItemClickListener, View.OnClickListener {
+
+    private static final String TAG = "MainListFragment";
 
     @Bind(R.id.recyclerView)
     RecyclerView mRecyclerView;
@@ -73,7 +75,7 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
         mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         showLoading(false);
-        loadData(false);
+//        loadData(false);
     }
 
     @Override
@@ -85,6 +87,15 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
     public void setData(List<RssEntry> data) {
         mAdapter.clear();
         mAdapter.addAll(data);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void addData(List<RssEntry> data) {
+        List<RssEntry> newData = mAdapter.getObjects();
+        newData.addAll(0, data);
+        mAdapter.clear();
+        mAdapter.addAll(newData);
         mAdapter.notifyDataSetChanged();
     }
 
@@ -111,21 +122,21 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
     @Override
     public void showContent() {
         super.showContent();
-        Log.d("baoyibao", "showContent");
+        Logger.d(TAG, "showContent");
         this.contentView.setRefreshing(false);
     }
 
     @Override
     public void showLoading(boolean pullToRefresh) {
         super.showLoading(pullToRefresh);
-        Log.d("baoyibao", "showLoading");
+        Logger.d(TAG, "showLoading");
         this.contentView.setRefreshing(pullToRefresh);
     }
 
     @Override
     public void showError(Throwable e, boolean pullToRefresh) {
         super.showError(e, pullToRefresh);
-        Log.d("baoyibao", "showError");
+        Logger.d(TAG, "showError");
         this.contentView.setRefreshing(false);
     }
 

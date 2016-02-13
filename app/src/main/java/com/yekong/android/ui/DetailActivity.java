@@ -31,7 +31,7 @@ import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import com.yekong.android.R;
 import com.yekong.android.util.ResUtils;
 import com.yekong.android.util.UseCase;
-import com.yekong.rss.RssEntry;
+import com.yekong.android.rss.RssEntry;
 
 import net.qiujuer.genius.app.BlurKit;
 
@@ -103,7 +103,7 @@ public class DetailActivity extends AppCompatActivity {
                 .into(new BitmapImageViewTarget(mAppBarImage) {
                     @Override
                     protected void setResource(Bitmap resource) {
-                        mAppBarImage.setImageBitmap(BlurKit.blur(resource, 10, true));
+                        mAppBarImage.setImageBitmap(BlurKit.blur(resource, 16, true));
                     }
                 });
     }

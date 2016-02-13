@@ -1,4 +1,4 @@
-package com.yekong.rss;
+package com.yekong.android.rss;
 
 import org.xml.sax.Attributes;
 

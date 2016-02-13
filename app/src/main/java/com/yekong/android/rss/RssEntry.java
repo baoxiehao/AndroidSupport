@@ -1,10 +1,10 @@
-package com.yekong.rss;
+package com.yekong.android.rss;
 
 import com.google.gson.Gson;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Locale;
 
 public class RssEntry {
 
@@ -53,12 +53,16 @@ public class RssEntry {
     }
 
     public void setPubDate(String pubDate) {
+        pubDate = pubDate.replaceAll(".000Z", "");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd HH:mm");
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = sdf.parse(pubDate);
-            this.pubDate = sdf.format(date);
+            this.pubDate = df.format(new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(pubDate));
         } catch (ParseException e) {
-            this.pubDate = pubDate;
+            try {
+                this.pubDate = df.format(new SimpleDateFormat("dd MMM yyyy HH:mm", Locale.ENGLISH).parse(pubDate));
+            } catch (ParseException e2) {
+                this.pubDate = pubDate;
+            }
         }
     }
 

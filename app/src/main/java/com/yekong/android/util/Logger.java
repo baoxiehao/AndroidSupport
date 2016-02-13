@@ -20,6 +20,10 @@ public class Logger {
         Log.w(TAG + tag, msg);
     }
 
+    public static void e(String tag, String msg) {
+        Log.e(TAG + tag, msg);
+    }
+
     public static void e(String tag, String msg, Throwable t) {
         Log.e(TAG + tag, msg, t);
     }

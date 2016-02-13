@@ -6,7 +6,7 @@ import android.content.Intent;
 import com.thefinestartist.finestwebview.FinestWebView;
 import com.yekong.android.R;
 import com.yekong.android.ui.DetailActivity;
-import com.yekong.rss.RssEntry;
+import com.yekong.android.rss.RssEntry;
 
 /**
  * Created by baoxiehao on 16/2/3.

@@ -3,24 +3,23 @@ package com.yekong.android.mvp;
 import android.content.Context;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
+import com.yekong.android.cache.Provider;
+import com.yekong.android.rss.RssEntry;
 import com.yekong.android.util.Logger;
-import com.yekong.rss.OpmlEntry;
-import com.yekong.rss.OpmlHandler;
-import com.yekong.rss.OpmlReader;
-import com.yekong.rss.RssHandler;
-import com.yekong.rss.RssReader;
 
-import rx.Observable;
+import java.util.ArrayList;
+import java.util.List;
+
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
  * Created by baoxiehao on 16/1/29.
  */
 public class MainListPresenter extends MvpBasePresenter<MainListView> {
+
     private static final String TAG = "MainListPresenter";
 
     public MainListPresenter() {
@@ -39,53 +38,42 @@ public class MainListPresenter extends MvpBasePresenter<MainListView> {
     }
 
     public void loadMainList(final Context context, final boolean pullToRefresh) {
-        OpmlReader.parse(context, "opml.xml")
-                .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<OpmlHandler, Observable<OpmlEntry>>() {
-                    @Override
-                    public Observable<OpmlEntry> call(OpmlHandler opmlHandler) {
-                        Logger.i(TAG, "opml size: " + opmlHandler.getEntries().size());
-                        return Observable.from(opmlHandler.getEntries());
-                    }
-                })
-                .filter(new Func1<OpmlEntry, Boolean>() {
-                    @Override
-                    public Boolean call(OpmlEntry opmlEntry) {
-                        return opmlEntry.getXmlUrl() != null;
-                    }
-                })
-                .last()
-                .flatMap(new Func1<OpmlEntry, Observable<RssHandler>>() {
-                    @Override
-                    public Observable<RssHandler> call(OpmlEntry opmlEntry) {
-                        Logger.d(TAG, "opml entry: " + opmlEntry);
-                        return RssReader.parse(opmlEntry.getXmlUrl());
-                    }
-                })
+        Provider.getInstance(context)
+                .allEntries()
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        Logger.d(TAG, "sub");
+                        Logger.d(TAG, "sub: " + pullToRefresh);
+                        if (isViewAttached()) {
+                            getView().setData(new ArrayList<RssEntry>());
+                        }
                     }
                 })
                 .doOnUnsubscribe(new Action0() {
                     @Override
                     public void call() {
-                        Logger.d(TAG, "unsub");
+                        Logger.d(TAG, "unsub: " + pullToRefresh);
                     }
                 })
                 .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        Logger.e(TAG, "error", throwable);
+                        Logger.e(TAG, "error: " + pullToRefresh, throwable);
                     }
                 })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RssHandler>() {
+                .doOnNext(new Action1<List<RssEntry>>() {
                     @Override
-                    public void call(RssHandler rssHandler) {
+                    public void call(List<RssEntry> rssEntries) {
+                        Logger.d(TAG, "load rss entries: " + rssEntries.size() + ", " + rssEntries.hashCode());
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<RssEntry>>() {
+                    @Override
+                    public void call(List<RssEntry> rssEntries) {
                         if (isViewAttached()) {
-                            getView().setData(rssHandler.getEntries());
+                            getView().addData(rssEntries);
                             getView().showContent();
                         }
                     }
@@ -94,6 +82,13 @@ public class MainListPresenter extends MvpBasePresenter<MainListView> {
                     public void call(Throwable throwable) {
                         if (isViewAttached()) {
                             getView().showError(throwable, pullToRefresh);
+                        }
+                    }
+                }, new Action0() {
+                    @Override
+                    public void call() {
+                        if (isViewAttached()) {
+                            getView().showContent();
                         }
                     }
                 });

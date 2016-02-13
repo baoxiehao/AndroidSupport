@@ -1,4 +1,4 @@
-package com.yekong.rss;
+package com.yekong.android.rss;
 
 import com.google.gson.Gson;
 

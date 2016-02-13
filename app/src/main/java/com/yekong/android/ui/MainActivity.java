@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity
             FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
             adapter.addFragment(MainListFragment.newInstance(), getString(R.string.tab_all));
             adapter.addFragment(MainListFragment.newInstance(), getString(R.string.tab_new));
-            adapter.addFragment(MainListFragment.newInstance(), getString(R.string.tab_star));
+//            adapter.addFragment(MainListFragment.newInstance(), getString(R.string.tab_star));
             mViewPager.setAdapter(adapter);
 
             TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);

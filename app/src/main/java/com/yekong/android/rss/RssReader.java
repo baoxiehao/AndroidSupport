@@ -1,4 +1,6 @@
-package com.yekong.rss;
+package com.yekong.android.rss;
+
+import com.yekong.android.util.Logger;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -10,6 +12,9 @@ import rx.Observable;
 import rx.Subscriber;
 
 public class RssReader {
+
+    private static final String TAG = "RssReader";
+
     public static Observable<RssHandler> parse(final String url) {
         return Observable.create(new Observable.OnSubscribe<RssHandler>() {
             @Override
@@ -21,7 +26,8 @@ public class RssReader {
                     HttpURLConnection conn = null;
                     try {
                         // Creates a new RssHandler which will do all the parsing.
-                        RssHandler handler = new RssHandler();
+                        RssHandler handler = new RssHandler(url);
+                        Logger.d(TAG, "parse url: " + url);
                         if (usesUrlConn) {
                             URL connUrl = new URL(url);
                             conn = (HttpURLConnection) connUrl.openConnection();
@@ -45,7 +51,9 @@ public class RssReader {
                     }
                 } catch (Exception e) {
                     if (!subscriber.isUnsubscribed()) {
-                        subscriber.onError(e);
+//                        subscriber.onError(e);
+//                        Logger.e(TAG, "parse error", e);
+                        Logger.e(TAG, String.format("parse error for %s: %s", url, e.getMessage()));
                     }
                 }
             }

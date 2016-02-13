@@ -4,20 +4,22 @@
         <title>寸志 subscriptions in Digg Reader</title>
     </head>
     <body>
+        <outline htmlUrl="http://www.androiddesignpatterns.com"
+            text="androiddesignpatterns" title="androiddesignpatterns" type="rss"
+            xmlUrl="http://www.androiddesignpatterns.com/feed.atom" />
+        <outline htmlUrl="http://www.androidweekly.cn"
+            text="androidweekly" title="androidweekly" type="rss"
+            xmlUrl="http://www.androidweekly.cn/rss/" />
+        <outline htmlUrl="http://lucifr.com"
+            text="lucifr" title="lucifr" type="rss"
+            xmlUrl="http://lucifr.com/atom.xml" />
+        <outline htmlUrl="http://drakeet.me"
+            text="drakeet" title="drakeet" type="rss"
+            xmlUrl="http://drakeet.me/feed" />
         <outline htmlUrl="http://eyedesyn.com" text="eyedesyn" title="eyedesyn" type="rss"
             xmlUrl="http://eyedesyn.com/feed/" />
-        <outline htmlUrl="http://cn.iojs.org" text="io.js cn" title="io.js cn" type="rss"
-            xmlUrl="http://cn.iojs.org/feed.xml" />
-        <outline htmlUrl="http://wiki.ecmascript.org/" text="ES Wiki" title="ES Wiki" type="rss"
-            xmlUrl="http://wiki.ecmascript.org/feed.php" />
-        <outline htmlUrl="http://www.infoq.com" text="InfoQ - Next Generation HTML5 and JavaScript"
-            title="InfoQ - Next Generation HTML5 and JavaScript" type="rss"
-            xmlUrl="http://www.infoq.com/feed/Next-Generation-HTML5-JavaScript" />
         <outline htmlUrl="http://blog.durandal.io/" text="Durandal" title="Durandal" type="rss"
             xmlUrl="http://blog.durandal.io/rss/" />
-        <outline htmlUrl="http://www.2ality.com/" text="②ality – JavaScript and more"
-            title="②ality – JavaScript and more" type="rss"
-            xmlUrl="http://www.2ality.com/feeds/posts/default" />
         <outline htmlUrl="http://island205.com/" text="寸志" title="寸志" type="rss"
             xmlUrl="http://island205.com/atom.xml" />
         <outline htmlUrl="http://yehudakatz.com/" text="Katz Got Your Tongue?"
@@ -25,14 +27,8 @@
         <outline htmlUrl="http://engineering.flipboard.com" text="Flipboard Engineering"
             title="Flipboard Engineering" type="rss"
             xmlUrl="http://engineering.flipboard.com/feed" />
-        <outline htmlUrl="http://nerds.airbnb.com" text="Airbnb Engineering"
-            title="Airbnb Engineering" type="rss" xmlUrl="http://nerds.airbnb.com/feed" />
         <outline htmlUrl="http://facebook.github.io/react" text="React" title="React" type="rss"
             xmlUrl="http://facebook.github.io/react/feed.xml" />
-        <outline htmlUrl="http://www.cnblogs.com/cathsfz/" text="Cat in dotNET"
-            title="Cat in dotNET" type="rss" xmlUrl="http://feeds.feedburner.com/CatChen/dotNET" />
-        <outline htmlUrl="http://wanderer.tw/" text="Wanderer" title="Wanderer" type="rss"
-            xmlUrl="http://wanderer.tw/rss" />
         <outline htmlUrl="http://octodex.github.com/" text="OCTOCATS!" title="OCTOCATS!" type="rss"
             xmlUrl="http://feeds.feedburner.com/Octocats" />
         <outline htmlUrl="http://75team.com/weekly/" text="奇舞周刊" title="奇舞周刊" type="rss"
@@ -148,17 +144,6 @@
             <outline htmlUrl="http://blog.trello.com" text="Trello Blog" title="Trello Blog"
                 type="rss" xmlUrl="http://blog.trello.com/feed/" />
         </outline>
-        <outline text="豆瓣小组" title="豆瓣小组">
-            <outline htmlUrl="http://www.douban.com/group/sketchapp/discussion"
-                text="豆瓣: Sketch小组的讨论" title="豆瓣: Sketch小组的讨论" type="rss"
-                xmlUrl="http://www.douban.com/feed/group/sketchapp/discussion" />
-            <outline htmlUrl="http://www.douban.com/group/522213/discussion" text="豆瓣: Swift小组的讨论"
-                title="豆瓣: Swift小组的讨论" type="rss"
-                xmlUrl="http://www.douban.com/feed/group/522213/discussion" />
-            <outline htmlUrl="http://www.douban.com/group/425012/discussion"
-                text="豆瓣: Teambition小组的讨论" title="豆瓣: Teambition小组的讨论" type="rss"
-                xmlUrl="http://www.douban.com/feed/group/425012/discussion" />
-        </outline>
         <outline text="Product Design" title="Product Design">
             <outline htmlUrl="http://www.cssdesignawards.com"
                 text="CSS Gallery and CSS Web Design Awards"
@@ -233,10 +218,6 @@
             type="rss" xmlUrl="http://wanghero.blog.techweb.com.cn/feed" />
         <outline htmlUrl="http://24ways.org/" text="24 ways" title="24 ways" type="rss"
             xmlUrl="http://feeds.feedburner.com/24ways" />
-        <outline htmlUrl="http://addyosmani.com/blog"
-            text="AddyOsmani.com | jQuery &amp; JavaScript Articles For The Community"
-            title="AddyOsmani.com | jQuery &amp; JavaScript Articles For The Community" type="rss"
-            xmlUrl="http://addyosmani.com/blog/feed/" />
         <outline htmlUrl="" text="Adventures in JavaScript Development"
             title="Adventures in JavaScript Development" type="rss"
             xmlUrl="http://rmurphey.com/atom.xml" />

@@ -1,4 +1,4 @@
-package com.yekong.rss;
+package com.yekong.android.rss;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -8,12 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RssHandler extends DefaultHandler {
+
+    private String url;
     private RssFeed feed;
     private List<RssEntry> entries;
     private RssEntry currEntry;
     private StringBuilder builder;
 
-    public RssHandler() {
+    public RssHandler(String url) {
+        this.url = url;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public List<RssEntry> getEntries() {
