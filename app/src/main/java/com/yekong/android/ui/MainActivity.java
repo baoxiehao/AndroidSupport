@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.yekong.android.R;
+import com.yekong.android.cache.Provider;
 import com.yekong.android.mvp.MainListFragment;
 
 import butterknife.Bind;
@@ -65,9 +66,8 @@ public class MainActivity extends AppCompatActivity
     private void initViewPager() {
         if (mViewPager != null) {
             FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
-            adapter.addFragment(MainListFragment.newInstance(), getString(R.string.tab_all));
-            adapter.addFragment(MainListFragment.newInstance(), getString(R.string.tab_new));
-//            adapter.addFragment(MainListFragment.newInstance(), getString(R.string.tab_star));
+            adapter.addFragment(MainListFragment.newInstance(Provider.TAG_ALL_RSS), getString(R.string.tab_all));
+            adapter.addFragment(MainListFragment.newInstance(Provider.TAG_IT_RSS), getString(R.string.tab_new));
             mViewPager.setAdapter(adapter);
 
             TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);

@@ -7,7 +7,9 @@ import com.yekong.android.rss.RssFactory;
 import com.yekong.android.rss.RssFeed;
 import com.yekong.android.util.Logger;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import au.com.gridstone.rxstore.RxStore;
 import au.com.gridstone.rxstore.converters.GsonConverter;
@@ -27,8 +29,11 @@ public class Provider {
 
     private static Provider sInstance;
 
+    public static final String TAG_ALL_RSS = "all.txt";
+    public static final String TAG_IT_RSS = "it.txt";
+
     private Context mContext;
-    private ReplayRelay<RssFeed> mReplayRelay = ReplayRelay.create();
+    private Map<String, ReplayRelay<RssFeed>> mReplayRssFeeds = new HashMap<>();
 
     public static synchronized Provider getInstance(Context context) {
         if (sInstance == null) {
@@ -37,14 +42,21 @@ public class Provider {
         return sInstance;
     }
 
-    public Observable<RssFeed> allFeeds() {
-        return mReplayRelay.toSerialized();
+    public Observable<RssFeed> rssFeeds(final String tag) {
+        return mReplayRssFeeds.get(tag).toSerialized();
     }
 
     private Provider(Context context) {
         mContext = context;
-        RssFactory.parseRssFeed(context)
-                .startWith(restoreAllRssFeeds())
+        mReplayRssFeeds.put(TAG_ALL_RSS, ReplayRelay.<RssFeed>create());
+        mReplayRssFeeds.put(TAG_IT_RSS, ReplayRelay.<RssFeed>create());
+        subscribeRssFeeds(TAG_ALL_RSS);
+        subscribeRssFeeds(TAG_IT_RSS);
+    }
+
+    private void subscribeRssFeeds(final String tag) {
+        RssFactory.parseRssFeed(mContext, tag)
+                .startWith(restoreRssFeeds(tag))
                 .subscribeOn(Schedulers.io())
                 .filter(new Func1<RssFeed, Boolean>() {
                     @Override
@@ -55,19 +67,19 @@ public class Provider {
                 .subscribe(new Action1<RssFeed>() {
                     @Override
                     public void call(RssFeed rssFeed) {
-                        mReplayRelay.call(rssFeed);
-                        Logger.d(TAG, String.format("RssFeed next: title=%s, size=%d",
-                                rssFeed.title, rssFeed.entries.size()));
+                        mReplayRssFeeds.get(tag).call(rssFeed);
+                        Logger.d(TAG, String.format("%s next: title=%s, size=%d",
+                                tag.toUpperCase(), rssFeed.title, rssFeed.entries.size()));
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        Logger.e(TAG, "RssFeed error", throwable);
+                        Logger.e(TAG, String.format("%s error", tag.toUpperCase()), throwable);
                     }
                 }, new Action0() {
                     @Override
                     public void call() {
-                        Logger.d(TAG, "RssFeed done");
+                        Logger.d(TAG, String.format("%s done", tag.toUpperCase()));
                     }
                 });
     }
@@ -124,33 +136,39 @@ public class Provider {
                 .subscribeOn(Schedulers.io());
     }
 
-    public void saveAllRssFeeds() {
-        mReplayRelay.toSerialized().toList()
+    public void saveRssFeeds() {
+        saveRssFeeds(TAG_ALL_RSS);
+        saveRssFeeds(TAG_IT_RSS);
+    }
+
+    private void saveRssFeeds(final String tag) {
+        rssFeeds(tag)
+                .toList()
                 .subscribe(new Action1<List<RssFeed>>() {
                     @Override
                     public void call(List<RssFeed> rssFeeds) {
                         RxStore.withContext(mContext)
                                 .in("rss")
                                 .using(new GsonConverter())
-                                .putList("allFeeds", rssFeeds, RssFeed.class)
+                                .putList(tag, rssFeeds, RssFeed.class)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Action1<List<RssFeed>>() {
                                     @Override
                                     public void call(List<RssFeed> rssFeeds) {
-                                        Logger.d(TAG, "saveAllRssFeeds: size=" + rssFeeds.size());
+                                        Logger.d(TAG, "saveRssFeeds: size=" + rssFeeds.size());
                                     }
                                 });
                     }
                 });
     }
 
-    public Observable<RssFeed> restoreAllRssFeeds() {
-        Logger.d(TAG, "restoreAllRssFeeds");
+    private Observable<RssFeed> restoreRssFeeds(final String tag) {
+        Logger.d(TAG, "restoreAllFeeds");
         return RxStore.withContext(mContext)
                 .in("rss")
                 .using(new GsonConverter())
-                .getList("allFeeds", RssFeed.class)
+                .getList(tag, RssFeed.class)
                 .flatMap(new Func1<List<RssFeed>, Observable<RssFeed>>() {
                     @Override
                     public Observable<RssFeed> call(List<RssFeed> rssFeeds) {

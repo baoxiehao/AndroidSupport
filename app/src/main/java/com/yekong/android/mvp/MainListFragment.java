@@ -35,6 +35,8 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
 
     private static final String TAG = "MainListFragment";
 
+    private static final String ARG_TAG = "ARG_TAG";
+
     @Bind(R.id.recyclerView)
     RecyclerView mRecyclerView;
 
@@ -43,8 +45,14 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
 
     EfficientRecyclerAdapter<RssEntry> mAdapter;
 
-    public static MainListFragment newInstance() {
-        return new MainListFragment();
+    String mTag;
+
+    public static MainListFragment newInstance(String tag) {
+        Bundle args = new Bundle();
+        args.putString(ARG_TAG, tag);
+        MainListFragment fragment = new MainListFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -52,6 +60,8 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
         super.onCreate(savedInstanceState);
         // Enable retaining presenter / view state
         setRetainInstance(true);
+        Bundle args = getArguments();
+        mTag = args.getString(ARG_TAG);
     }
 
     @Override
@@ -86,7 +96,7 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
 
     @Override
     public MainListPresenter createPresenter() {
-        return new MainListPresenter();
+        return new MainListPresenter(mTag);
     }
 
     @Override

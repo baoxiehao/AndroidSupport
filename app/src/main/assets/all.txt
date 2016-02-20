@@ -1,10 +1,4 @@
-http://cn.engadget.com/rss.xml
-http://lucifr.com/atom.xml
-http://www.36kr.com/feed/
 http://coolshell.cn/feed
-http://www.williamlong.info/rss.xml
-http://www.androidweekly.cn/rss/
-http://drakeet.me/feed
 http://eyedesyn.com/feed/
 http://engineering.flipboard.com/feed
 http://75team.com/weekly/
@@ -20,5 +14,7 @@ http://www.geekpark.net/rss
 http://blog.sina.com.cn/rss/1219548027.xml
 http://songshuhui.net/feed
 https://www.smashingmagazine.com/feed/
-http://www.zhihu.com/rss
-http://www.ifanr.com/feed
+http://blog.echen.me/feeds/all.rss.xml
+http://www.sankakucomplex.com/feed/
+http://blog.sina.com.cn/rss/1691761292.xml
+http://mindhacks.cn/feed/

@@ -15,8 +15,8 @@ import rx.schedulers.Schedulers;
  */
 public class RssFactory {
 
-    public static Observable<RssFeed> parseRssFeed(final Context context) {
-        return FileUtils.readAssetLines(context, "rss.txt")
+    public static Observable<RssFeed> parseRssFeed(final Context context, final String assetFileName) {
+        return FileUtils.readAssetLines(context, assetFileName)
                 .flatMap(new Func1<String, Observable<RssFeed>>() {
                     @Override
                     public Observable<RssFeed> call(String url) {

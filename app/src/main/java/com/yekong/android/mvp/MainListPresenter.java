@@ -26,7 +26,10 @@ public class MainListPresenter extends MvpBasePresenter<MainListView> {
 
     private static final String TAG = "MainListPresenter";
 
-    public MainListPresenter() {
+    private String mTag;
+
+    public MainListPresenter(final String tag) {
+        mTag = tag;
     }
 
     @Override
@@ -42,12 +45,12 @@ public class MainListPresenter extends MvpBasePresenter<MainListView> {
     }
 
     public void saveData(final Context context) {
-        Provider.getInstance(context).saveAllRssFeeds();
+        Provider.getInstance(context).saveRssFeeds();
     }
 
     public void loadMainList(final Context context, final boolean pullToRefresh) {
         Provider.getInstance(context)
-                .allFeeds()
+                .rssFeeds(mTag)
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
