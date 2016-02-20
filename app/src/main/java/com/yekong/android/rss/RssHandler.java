@@ -43,14 +43,15 @@ public class RssHandler extends DefaultHandler {
             throws SAXException {
         super.startElement(uri, localName, qName, attributes);
         if (RssTag.isFeed(qName)) {
-            this.feed = new RssFeed();
+            feed = new RssFeed();
+            feed.entries = entries;
         } else if (RssTag.isItem(qName)) {
-            this.currEntry = new RssEntry();
+            currEntry = new RssEntry();
         } else if (RssTag.isLink(qName)) {
             if (currEntry != null) {
                 currEntry.setLink(RssTag.getAttrHref(attributes));
             } else if (feed != null) {
-                feed.setLink(RssTag.getAttrHref(attributes));
+                feed.link = RssTag.getAttrHref(attributes);
             }
         }
     }
@@ -68,18 +69,18 @@ public class RssHandler extends DefaultHandler {
             } else if (RssTag.isPubDate(qName)) {
                 currEntry.setPubDate(builder.toString().trim());
             } else if (RssTag.isItem(qName)) {
-                currEntry.setSource(feed.getTitle());
+                currEntry.setSource(feed.title);
                 entries.add(currEntry);
             }
         } else if (this.feed != null) {
             if (RssTag.isTitle(qName)) {
-                feed.setTitle(builder.toString().trim());
-            } else if (RssTag.isLink(qName) && feed.getLink() == null) {
-                feed.setLink(builder.toString().trim());
+                feed.title = builder.toString().trim();
+            } else if (RssTag.isLink(qName) && feed.link == null) {
+                feed.link = builder.toString().trim();
             } else if (RssTag.isDesc(qName)) {
-                feed.setDescription(builder.toString().trim());
+                feed.description = builder.toString().trim();
             } else if (RssTag.isLastDate(qName)) {
-                feed.setLastBuildDate(builder.toString().trim());
+                feed.lastBuildDate = builder.toString().trim();
             }
         }
         builder.setLength(0);

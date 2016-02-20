@@ -9,5 +9,4 @@ import java.util.List;
  * Created by baoxiehao on 16/1/29.
  */
 public interface MainListView extends MvpLceView<List<RssEntry>> {
-    void addData(List<RssEntry> data);
 }

@@ -1,12 +1,9 @@
 package com.yekong.android.rss;
 
 import com.google.gson.Gson;
+import com.yekong.android.util.DateUtils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
-public class RssEntry {
+public class RssEntry implements Comparable<RssEntry> {
 
     private static final Gson sGson = new Gson();
 
@@ -53,17 +50,7 @@ public class RssEntry {
     }
 
     public void setPubDate(String pubDate) {
-        pubDate = pubDate.replaceAll(".000Z", "");
-        SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-        try {
-            this.pubDate = df.format(new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(pubDate));
-        } catch (ParseException e) {
-            try {
-                this.pubDate = df.format(new SimpleDateFormat("dd MMM yyyy HH:mm", Locale.ENGLISH).parse(pubDate));
-            } catch (ParseException e2) {
-                this.pubDate = pubDate;
-            }
-        }
+        this.pubDate = DateUtils.normalizeDate(pubDate);
     }
 
     @Override
@@ -73,5 +60,10 @@ public class RssEntry {
 
     public static RssEntry fromJson(String json) {
         return sGson.fromJson(json, RssEntry.class);
+    }
+
+    @Override
+    public int compareTo(RssEntry another) {
+        return another.pubDate.compareTo(this.pubDate);
     }
 }

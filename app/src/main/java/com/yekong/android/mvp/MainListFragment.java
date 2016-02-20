@@ -54,6 +54,12 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
         setRetainInstance(true);
     }
 
+    @Override
+    public void onDestroy() {
+        this.presenter.saveData(getContext());
+        super.onDestroy();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -91,12 +97,8 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
     }
 
     @Override
-    public void addData(List<RssEntry> data) {
-        List<RssEntry> newData = mAdapter.getObjects();
-        newData.addAll(0, data);
-        mAdapter.clear();
-        mAdapter.addAll(newData);
-        mAdapter.notifyDataSetChanged();
+    public List<RssEntry> getData() {
+        return mAdapter == null ? new ArrayList<RssEntry>() : mAdapter.getObjects();
     }
 
     @Override
@@ -112,11 +114,6 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
     @Override
     public LceViewState<List<RssEntry>, MainListView> createViewState() {
         return new RetainingLceViewState<>();
-    }
-
-    @Override
-    public List<RssEntry> getData() {
-        return mAdapter == null ? null : mAdapter.getObjects();
     }
 
     @Override

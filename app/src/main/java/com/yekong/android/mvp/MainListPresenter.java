@@ -5,15 +5,19 @@ import android.content.Context;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.yekong.android.cache.Provider;
 import com.yekong.android.rss.RssEntry;
+import com.yekong.android.rss.RssFeed;
 import com.yekong.android.util.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by baoxiehao on 16/1/29.
@@ -37,9 +41,13 @@ public class MainListPresenter extends MvpBasePresenter<MainListView> {
         Logger.d(TAG, "detach main list");
     }
 
+    public void saveData(final Context context) {
+        Provider.getInstance(context).saveAllRssFeeds();
+    }
+
     public void loadMainList(final Context context, final boolean pullToRefresh) {
         Provider.getInstance(context)
-                .allEntries()
+                .allFeeds()
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -55,25 +63,34 @@ public class MainListPresenter extends MvpBasePresenter<MainListView> {
                         Logger.d(TAG, "unsub: " + pullToRefresh);
                     }
                 })
-                .doOnError(new Action1<Throwable>() {
+                .flatMap(new Func1<RssFeed, Observable<List<RssEntry>>>() {
                     @Override
-                    public void call(Throwable throwable) {
-                        Logger.e(TAG, "error: " + pullToRefresh, throwable);
+                    public Observable<List<RssEntry>> call(RssFeed rssFeed) {
+                        return Observable.just(rssFeed.entries);
                     }
                 })
-                .doOnNext(new Action1<List<RssEntry>>() {
+                .scan(new Func2<List<RssEntry>, List<RssEntry>, List<RssEntry>>() {
                     @Override
-                    public void call(List<RssEntry> rssEntries) {
-                        Logger.d(TAG, "load rss entries: " + rssEntries.size() + ", " + rssEntries.hashCode());
+                    public List<RssEntry> call(List<RssEntry> rssEntries, List<RssEntry> rssEntries2) {
+                        List<RssEntry> mergedEntries = new ArrayList<RssEntry>();
+                        mergedEntries.addAll(rssEntries);
+                        mergedEntries.addAll(rssEntries2);
+                        return mergedEntries;
                     }
                 })
-                .subscribeOn(Schedulers.io())
+                .map(new Func1<List<RssEntry>, List<RssEntry>>() {
+                    @Override
+                    public List<RssEntry> call(List<RssEntry> rssEntries) {
+                        Collections.sort(rssEntries);
+                        return rssEntries;
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<List<RssEntry>>() {
                     @Override
                     public void call(List<RssEntry> rssEntries) {
                         if (isViewAttached()) {
-                            getView().addData(rssEntries);
+                            getView().setData(rssEntries);
                             getView().showContent();
                         }
                     }

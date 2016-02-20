@@ -2,6 +2,8 @@ package com.yekong.android.rss;
 
 import com.google.gson.Gson;
 
+import java.util.List;
+
 public class RssFeed {
 
     private static final Gson sGson = new Gson();
@@ -10,37 +12,19 @@ public class RssFeed {
     public String link;
     public String description;
     public String lastBuildDate;
+    public List<RssEntry> entries;
 
-    public String getTitle() {
-        return title;
+    @Override
+    public int hashCode() {
+        return link.hashCode() + 13 * lastBuildDate.hashCode();
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getLastBuildDate() {
-        return lastBuildDate;
-    }
-
-    public void setLastBuildDate(String lastBuildDate) {
-        this.lastBuildDate = lastBuildDate;
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof RssFeed)) {
+            return false;
+        }
+        return toString().hashCode() == o.toString().hashCode();
     }
 
     @Override

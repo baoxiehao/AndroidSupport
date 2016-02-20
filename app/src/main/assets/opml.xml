@@ -4,6 +4,9 @@
         <title>寸志 subscriptions in Digg Reader</title>
     </head>
     <body>
+        <outline htmlUrl="www.williamlong.info"
+            text="WilliamLong" title="WilliamLong" type="rss"
+            xmlUrl="www.williamlong.info/rss.xml"/>
         <outline htmlUrl="http://www.androiddesignpatterns.com"
             text="androiddesignpatterns" title="androiddesignpatterns" type="rss"
             xmlUrl="http://www.androiddesignpatterns.com/feed.atom" />

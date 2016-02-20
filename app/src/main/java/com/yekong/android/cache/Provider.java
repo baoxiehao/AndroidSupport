@@ -3,16 +3,11 @@ package com.yekong.android.cache;
 import android.content.Context;
 
 import com.jakewharton.rxrelay.ReplayRelay;
-import com.yekong.android.rss.OpmlEntry;
-import com.yekong.android.rss.OpmlHandler;
-import com.yekong.android.rss.OpmlReader;
-import com.yekong.android.rss.RssEntry;
-import com.yekong.android.rss.RssHandler;
-import com.yekong.android.rss.RssReader;
+import com.yekong.android.rss.RssFactory;
+import com.yekong.android.rss.RssFeed;
 import com.yekong.android.util.Logger;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import au.com.gridstone.rxstore.RxStore;
 import au.com.gridstone.rxstore.converters.GsonConverter;
@@ -33,7 +28,7 @@ public class Provider {
     private static Provider sInstance;
 
     private Context mContext;
-    private ReplayRelay<List<RssEntry>> mReplayRelay = ReplayRelay.create();
+    private ReplayRelay<RssFeed> mReplayRelay = ReplayRelay.create();
 
     public static synchronized Provider getInstance(Context context) {
         if (sInstance == null) {
@@ -42,109 +37,125 @@ public class Provider {
         return sInstance;
     }
 
-    public Observable<List<RssEntry>> allEntries() {
+    public Observable<RssFeed> allFeeds() {
         return mReplayRelay.toSerialized();
     }
 
     private Provider(Context context) {
         mContext = context;
-        parseOpml()
+        RssFactory.parseRssFeed(context)
+                .startWith(restoreAllRssFeeds())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<List<RssEntry>>() {
+                .filter(new Func1<RssFeed, Boolean>() {
                     @Override
-                    public void call(List<RssEntry> rssEntries) {
-                        Logger.d(TAG, "parseOpml next: " + rssEntries.size());
+                    public Boolean call(RssFeed rssFeed) {
+                        return rssFeed.entries.size() > 0;
+                    }
+                })
+                .subscribe(new Action1<RssFeed>() {
+                    @Override
+                    public void call(RssFeed rssFeed) {
+                        mReplayRelay.call(rssFeed);
+                        Logger.d(TAG, String.format("RssFeed next: title=%s, size=%d",
+                                rssFeed.title, rssFeed.entries.size()));
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        Logger.e(TAG, "parseOpml error: ", throwable);
+                        Logger.e(TAG, "RssFeed error", throwable);
                     }
                 }, new Action0() {
                     @Override
                     public void call() {
-                        Logger.d(TAG, "parseOpml done");
+                        Logger.d(TAG, "RssFeed done");
                     }
                 });
     }
 
-    private Observable<List<RssEntry>> parseOpml() {
-        return OpmlReader.parse(mContext, "opml.xml")
-                .subscribeOn(Schedulers.io())
-                .concatMap(new Func1<OpmlHandler, Observable<OpmlEntry>>() {
-                    @Override
-                    public Observable<OpmlEntry> call(OpmlHandler opmlHandler) {
-                        Logger.d(TAG, "parseOpml(): " + opmlHandler.getEntries().size());
-                        return Observable.from(opmlHandler.getEntries());
-                    }
-                })
-                .filter(new Func1<OpmlEntry, Boolean>() {
-                    @Override
-                    public Boolean call(OpmlEntry opmlEntry) {
-                        return opmlEntry.getXmlUrl() != null;
-                    }
-                })
-                .concatMap(new Func1<OpmlEntry, Observable<List<RssEntry>>>() {
-                    @Override
-                    public Observable<List<RssEntry>> call(OpmlEntry opmlEntry) {
-                        return parseRssEntry(opmlEntry.getXmlUrl());
-                    }
-                })
-                .filter(new Func1<List<RssEntry>, Boolean>() {
-                    @Override
-                    public Boolean call(List<RssEntry> rssEntries) {
-                        return rssEntries != null;
-                    }
-                })
-                .doOnNext(new Action1<List<RssEntry>>() {
-                    @Override
-                    public void call(List<RssEntry> rssEntries) {
-                        mReplayRelay.call(rssEntries);
-                    }
-                });
-    }
+//                        .retryWhen(new Func1<Observable<? extends Throwable>, Observable<?>>() {
+//                            @Override
+//                            public Observable<?> call(Observable<? extends Throwable> errors) {
+//                                return errors.flatMap(new Func1<Throwable, Observable<Throwable>>() {
+//                                    @Override
+//                                    public Observable<Throwable> call(Throwable throwable) {
+//                                        Logger.e(TAG, "retryWhen " + url + " " + throwable.getMessage());
+//                                        if (throwable != null && !(throwable instanceof TimeoutException)) {
+//                                            return Observable.just(null);
+//                                        }
+//                                        return Observable.error(throwable);
+//                                    }
+//                                }).zipWith(Observable.range(1, 3), new Func2<Throwable, Integer, Integer>() {
+//                                    @Override
+//                                    public Integer call(Throwable throwable, Integer integer) {
+//                                        return integer;
+//                                    }
+//                                }).flatMap(new Func1<Integer, Observable<?>>() {
+//                                    @Override
+//                                    public Observable<?> call(Integer retryCount) {
+//                                        Logger.d(TAG, String.format("Retry %s for the %d time", url, retryCount));
+//                                        return Observable.timer((long) Math.pow(2, retryCount), TimeUnit.SECONDS);
+//                                    }
+//                                });
+//                            }
+//                        }))
 
-    private Observable<List<RssEntry>> parseRssEntry(String url) {
-        return Observable.concat(
-                restoreRssEntries(url),
-                RssReader.parse(url)
-                        .flatMap(new Func1<RssHandler, Observable<List<RssEntry>>>() {
-                            @Override
-                            public Observable<List<RssEntry>> call(RssHandler rssHandler) {
-                                saveRssEntries(rssHandler);
-                                return Observable.just(rssHandler.getEntries());
-                            }
-                        })
-                        .timeout(1, TimeUnit.SECONDS)
-                        .onErrorReturn(new Func1<Throwable, List<RssEntry>>() {
-                            @Override
-                            public List<RssEntry> call(Throwable throwable) {
-                                return null;
-                            }
-                        }))
-                .first();
-    }
-
-    private void saveRssEntries(RssHandler rssHandler) {
+    public void saveRssFeed(RssFeed rssFeed) {
         RxStore.withContext(mContext)
                 .in("rss")
                 .using(new GsonConverter())
-                .putList("feed" + rssHandler.getUrl().hashCode(), rssHandler.getEntries(), RssEntry.class)
+                .put("feed" + rssFeed.link.hashCode(), rssFeed)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<RssEntry>>() {
+                .subscribe(new Action1<RssFeed>() {
                     @Override
-                    public void call(List<RssEntry> rssEntries) {
-                        Logger.d(TAG, "saveRssEntries: " + rssEntries.size());
+                    public void call(RssFeed rssFeed) {
+                        Logger.d(TAG, String.format("saveRssFeed: title=%s, size=%d",
+                                rssFeed.title, rssFeed.entries.size()));
                     }
                 });
     }
 
-    private Observable<List<RssEntry>> restoreRssEntries(String url) {
-        Logger.d(TAG, "restoreRssEntries: " + url);
+    public Observable<RssFeed> restoreRssFeed(final String url) {
+        Logger.d(TAG, String.format("restoreRssFeed: url=%s", url));
         return RxStore.withContext(mContext)
                 .in("rss")
                 .using(new GsonConverter())
-                .getList("feed" + url.hashCode(), RssEntry.class);
+                .get("feed" + url.hashCode(), RssFeed.class)
+                .subscribeOn(Schedulers.io());
+    }
+
+    public void saveAllRssFeeds() {
+        mReplayRelay.toSerialized().toList()
+                .subscribe(new Action1<List<RssFeed>>() {
+                    @Override
+                    public void call(List<RssFeed> rssFeeds) {
+                        RxStore.withContext(mContext)
+                                .in("rss")
+                                .using(new GsonConverter())
+                                .putList("allFeeds", rssFeeds, RssFeed.class)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Action1<List<RssFeed>>() {
+                                    @Override
+                                    public void call(List<RssFeed> rssFeeds) {
+                                        Logger.d(TAG, "saveAllRssFeeds: size=" + rssFeeds.size());
+                                    }
+                                });
+                    }
+                });
+    }
+
+    public Observable<RssFeed> restoreAllRssFeeds() {
+        Logger.d(TAG, "restoreAllRssFeeds");
+        return RxStore.withContext(mContext)
+                .in("rss")
+                .using(new GsonConverter())
+                .getList("allFeeds", RssFeed.class)
+                .flatMap(new Func1<List<RssFeed>, Observable<RssFeed>>() {
+                    @Override
+                    public Observable<RssFeed> call(List<RssFeed> rssFeeds) {
+                        return Observable.from(rssFeeds);
+                    }
+                });
     }
 }
