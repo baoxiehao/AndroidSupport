@@ -1,5 +1,7 @@
 package com.yekong.android.rss;
 
+import com.yekong.android.util.DateUtils;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -71,8 +73,8 @@ public class RssHandler extends DefaultHandler {
                 feed.link = builder.toString().trim();
             } else if (RssTag.isDesc(qName)) {
                 feed.description = builder.toString().trim();
-            } else if (RssTag.isLastDate(qName)) {
-                feed.lastBuildDate = builder.toString().trim();
+            } else if (RssTag.isLastBuildDate(qName)) {
+                feed.lastBuildDate = DateUtils.normalizeDate(builder.toString().trim());
             }
         }
         builder.setLength(0);

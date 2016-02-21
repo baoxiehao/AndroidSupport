@@ -13,7 +13,7 @@ public class RssTag {
     private static final String LINK = "link";
     private static final String DESC = "description";
     private static final String PUB_DATE = "pubDate";
-    private static final String LAST_DATE = "lastBuildDate";
+    private static final String LAST_BUILD_DATE = "lastBuildDate";
     private static final String UPDATED = "updated";
 
     private static final String ATTR_HREF = "href";
@@ -42,8 +42,8 @@ public class RssTag {
         return PUB_DATE.equalsIgnoreCase(tag) || UPDATED.equalsIgnoreCase(tag);
     }
 
-    public static boolean isLastDate(String tag) {
-        return LAST_DATE.equalsIgnoreCase(tag) || UPDATED.equalsIgnoreCase(tag);
+    public static boolean isLastBuildDate(String tag) {
+        return LAST_BUILD_DATE.equalsIgnoreCase(tag) || UPDATED.equalsIgnoreCase(tag);
     }
 
     public static String getAttrHref(Attributes attrs) {

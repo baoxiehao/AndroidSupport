@@ -27,7 +27,6 @@ public class RssReader {
                     try {
                         // Creates a new RssHandler which will do all the parsing.
                         RssHandler handler = new RssHandler(url);
-                        Logger.d(TAG, "parse url: " + url);
                         if (usesUrlConn) {
                             URL connUrl = new URL(url);
                             conn = (HttpURLConnection) connUrl.openConnection();
@@ -53,7 +52,7 @@ public class RssReader {
                     if (!subscriber.isUnsubscribed()) {
 //                        subscriber.onError(e);
 //                        Logger.e(TAG, "parse error", e);
-                        Logger.e(TAG, String.format("parse error for %s: %s", url, e.getMessage()));
+                        Logger.e(TAG, String.format("parse error: url=%s, error=%s", url, e.getMessage()));
                     }
                 }
             }

@@ -164,6 +164,7 @@ public class Provider {
     }
 
     private void saveRssFeeds(final String tag) {
+        Logger.d(TAG, String.format("saveRssFeeds: tag=%s", tag.toUpperCase()));
         rssFeeds(tag)
                 .toList()
                 .subscribe(new Action1<List<RssFeed>>() {
@@ -186,7 +187,7 @@ public class Provider {
     }
 
     private Observable<RssFeed> restoreRssFeeds(final String tag) {
-        Logger.d(TAG, "restoreAllFeeds");
+        Logger.d(TAG, String.format("restoreRssFeeds: tag=%s", tag.toUpperCase()));
         return RxStore.withContext(mContext)
                 .in("rss")
                 .using(new GsonConverter())
