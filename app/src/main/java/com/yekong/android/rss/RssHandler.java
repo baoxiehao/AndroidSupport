@@ -19,14 +19,6 @@ public class RssHandler extends DefaultHandler {
         this.url = url;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public List<RssEntry> getEntries() {
-        return entries;
-    }
-
     public RssFeed getFeed() {
         return feed;
     }

@@ -64,6 +64,13 @@ public class RssEntry implements Comparable<RssEntry> {
 
     @Override
     public int compareTo(RssEntry another) {
-        return another.pubDate.compareTo(this.pubDate);
+        // some rss feed DOES NOT have pubDate...
+        if (another.pubDate == null) {
+            return -1;
+        } else if (this.pubDate == null) {
+            return 1;
+        } else {
+            return another.pubDate.compareTo(this.pubDate);
+        }
     }
 }

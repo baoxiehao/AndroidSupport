@@ -11,11 +11,13 @@ public class DateUtils {
 
     public static String normalizeDate(String date) {
         final String[] DATE_FORMATES = new String[]{
+                "EEE, dd MMM yyyy HH:mm:ss",
                 "EEE, dd MMM yyyy HH:mm:ss Z",
+                "EEE,dd MMM yyyy HH:mm:ss Z",
                 "yyyy-MM-dd'T'HH:mm:ss'Z'",
-                "yyyy/MM/dd HH:mm:ss",
                 "yyyy-MM-dd'T'HH:mm:ss.sss'Z'",
-                "yyyy-MM-dd'T'HH:mm:ss"
+                "yyyy-MM-dd'T'HH:mm:ss",
+                "yyyy/MM/dd HH:mm:ss",
         };
         SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd HH:mm");
         for (String dateFormat : DATE_FORMATES) {

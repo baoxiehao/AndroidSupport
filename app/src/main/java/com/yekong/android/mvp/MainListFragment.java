@@ -79,11 +79,10 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(view);
+        Logger.d(TAG, String.format("onViewCreated: tag=%s", mTag.toUpperCase()));
+        ButterKnife.bind(this, view);
         this.contentView.setOnRefreshListener(this);
         this.errorView.setOnClickListener(this);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView); // bind failed?
-        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.contentView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mSwipeRefreshLayout.setColorSchemeResources(R.color.primaryDark);
         mAdapter = new EfficientRecyclerAdapter<>(R.layout.list_item_main,
@@ -91,7 +90,7 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
         mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         showLoading(false);
-//        loadData(false);
+        loadData(false);
     }
 
     @Override
@@ -129,21 +128,21 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
     @Override
     public void showContent() {
         super.showContent();
-        Logger.d(TAG, "showContent");
+        Logger.d(TAG, String.format("showContent: tag=%s", mTag.toUpperCase()));
         this.contentView.setRefreshing(false);
     }
 
     @Override
     public void showLoading(boolean pullToRefresh) {
         super.showLoading(pullToRefresh);
-        Logger.d(TAG, "showLoading");
+        Logger.d(TAG, String.format("showLoading: tag=%s", mTag.toUpperCase()));
         this.contentView.setRefreshing(pullToRefresh);
     }
 
     @Override
     public void showError(Throwable e, boolean pullToRefresh) {
         super.showError(e, pullToRefresh);
-        Logger.d(TAG, "showError");
+        Logger.d(TAG, String.format("showError: tag=%s", mTag.toUpperCase()));
         this.contentView.setRefreshing(false);
     }
 
@@ -154,8 +153,8 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
 
     @Override
     public void onItemClick(EfficientAdapter adapter, View view, Object object, int position) {
-        UseCase.showDetailActivity(getContext(), (RssEntry) object);
-//        UseCase.showWebView(getContext(), ((RssEntry) object).getLink());
+//        UseCase.showDetailActivity(getContext(), (RssEntry) object);
+        UseCase.showWebView(getContext(), ((RssEntry) object).getLink());
     }
 
     @Override
@@ -163,7 +162,7 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
         switch (v.getId()) {
             case R.id.errorView:
                 showLoading(false);
-                loadData(false);
+                loadData(true);
                 break;
         }
     }

@@ -66,8 +66,10 @@ public class MainActivity extends AppCompatActivity
     private void initViewPager() {
         if (mViewPager != null) {
             FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
-            adapter.addFragment(MainListFragment.newInstance(Provider.TAG_ALL_RSS), getString(R.string.tab_all));
-            adapter.addFragment(MainListFragment.newInstance(Provider.TAG_IT_RSS), getString(R.string.tab_new));
+            adapter.addFragment(MainListFragment.newInstance(Provider.TAG_RSS_ALL), getString(R.string.tab_all));
+            adapter.addFragment(MainListFragment.newInstance(Provider.TAG_RSS_NEWS), getString(R.string.tab_news));
+            adapter.addFragment(MainListFragment.newInstance(Provider.TAG_RSS_IT), getString(R.string.tab_it));
+            adapter.addFragment(MainListFragment.newInstance(Provider.TAG_RSS_ART), getString(R.string.tab_design));
             mViewPager.setAdapter(adapter);
 
             TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @OnClick(R.id.fab)
-    void initTab() {
+    void initFab() {
         Snackbar.make(mFab, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", new View.OnClickListener() {
                     @Override

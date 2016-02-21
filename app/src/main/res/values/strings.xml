@@ -10,9 +10,10 @@
     <string name="mvp_empty_tip">No data</string>
     <string name="mvp_error_tip">Click to retry</string>
 
-    <string name="tab_all">All</string>
-    <string name="tab_new">New</string>
-    <string name="tab_star">Star</string>
+    <string name="tab_all">ALL</string>
+    <string name="tab_news">NEWS</string>
+    <string name="tab_it">IT</string>
+    <string name="tab_design">ART</string>
 
     <string name="nav_author">Elixon</string>
     <string name="nav_desc">https://baoxiehao.github.com</string>

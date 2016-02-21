@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.yekong.android.cache.Provider;
 import com.yekong.android.util.FileUtils;
+import com.yekong.android.util.Logger;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -15,11 +16,14 @@ import rx.schedulers.Schedulers;
  */
 public class RssFactory {
 
+    private static final String TAG = "RssFactory";
+
     public static Observable<RssFeed> parseRssFeed(final Context context, final String assetFileName) {
         return FileUtils.readAssetLines(context, assetFileName)
                 .flatMap(new Func1<String, Observable<RssFeed>>() {
                     @Override
                     public Observable<RssFeed> call(String url) {
+                        Logger.d(TAG, String.format("parseRssFeed: url=%s", url));
                         return Observable.concat(
                                 Provider.getInstance(context).restoreRssFeed(url),
                                 RssReader.parse(url)

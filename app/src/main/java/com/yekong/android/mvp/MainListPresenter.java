@@ -35,13 +35,13 @@ public class MainListPresenter extends MvpBasePresenter<MainListView> {
     @Override
     public void attachView(MainListView view) {
         super.attachView(view);
-        Logger.d(TAG, "attach main list");
+        Logger.d(TAG, String.format("attachView: tag=%s", mTag.toUpperCase()));
     }
 
     @Override
     public void detachView(boolean retainInstance) {
         super.detachView(retainInstance);
-        Logger.d(TAG, "detach main list");
+        Logger.d(TAG, String.format("detachView: tag=%s", mTag.toUpperCase()));
     }
 
     public void saveData(final Context context) {
@@ -54,7 +54,7 @@ public class MainListPresenter extends MvpBasePresenter<MainListView> {
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        Logger.d(TAG, "sub: " + pullToRefresh);
+                        Logger.d(TAG, String.format("SUBSCRIBE: tag=%s, pull=%s", mTag.toUpperCase(), pullToRefresh));
                         if (isViewAttached()) {
                             getView().setData(new ArrayList<RssEntry>());
                         }
@@ -63,7 +63,7 @@ public class MainListPresenter extends MvpBasePresenter<MainListView> {
                 .doOnUnsubscribe(new Action0() {
                     @Override
                     public void call() {
-                        Logger.d(TAG, "unsub: " + pullToRefresh);
+                        Logger.d(TAG, String.format("UNSUBSCRIBE: tag=%s, pull=%s", mTag.toUpperCase(), pullToRefresh));
                     }
                 })
                 .flatMap(new Func1<RssFeed, Observable<List<RssEntry>>>() {
@@ -101,6 +101,7 @@ public class MainListPresenter extends MvpBasePresenter<MainListView> {
                     @Override
                     public void call(Throwable throwable) {
                         if (isViewAttached()) {
+                            Logger.e(TAG, "error", throwable);
                             getView().showError(throwable, pullToRefresh);
                         }
                     }

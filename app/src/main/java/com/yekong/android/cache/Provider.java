@@ -29,8 +29,17 @@ public class Provider {
 
     private static Provider sInstance;
 
-    public static final String TAG_ALL_RSS = "all.txt";
-    public static final String TAG_IT_RSS = "it.txt";
+    public static final String TAG_RSS_ALL = "all";
+    public static final String TAG_RSS_NEWS = "news";
+    public static final String TAG_RSS_IT = "it";
+    public static final String TAG_RSS_ART = "art";
+
+    private String[] TAGS = new String[] {
+            TAG_RSS_ALL,
+            TAG_RSS_NEWS,
+            TAG_RSS_IT,
+            TAG_RSS_ART,
+    };
 
     private Context mContext;
     private Map<String, ReplayRelay<RssFeed>> mReplayRssFeeds = new HashMap<>();
@@ -43,15 +52,28 @@ public class Provider {
     }
 
     public Observable<RssFeed> rssFeeds(final String tag) {
-        return mReplayRssFeeds.get(tag).toSerialized();
+        switch (tag) {
+            case TAG_RSS_NEWS:
+            case TAG_RSS_IT:
+            case TAG_RSS_ART:
+                return mReplayRssFeeds.get(tag).toSerialized();
+            default:
+                return Observable.merge(
+                        mReplayRssFeeds.get(tag).toSerialized(),
+                        mReplayRssFeeds.get(TAG_RSS_NEWS).toSerialized(),
+                        mReplayRssFeeds.get(TAG_RSS_IT).toSerialized(),
+                        mReplayRssFeeds.get(TAG_RSS_ART).toSerialized());
+        }
     }
 
     private Provider(Context context) {
         mContext = context;
-        mReplayRssFeeds.put(TAG_ALL_RSS, ReplayRelay.<RssFeed>create());
-        mReplayRssFeeds.put(TAG_IT_RSS, ReplayRelay.<RssFeed>create());
-        subscribeRssFeeds(TAG_ALL_RSS);
-        subscribeRssFeeds(TAG_IT_RSS);
+        for (String tag : TAGS) {
+            mReplayRssFeeds.put(tag, ReplayRelay.<RssFeed>create());
+        }
+        for (String tag: TAGS) {
+            subscribeRssFeeds(tag);
+        }
     }
 
     private void subscribeRssFeeds(final String tag) {
@@ -137,8 +159,8 @@ public class Provider {
     }
 
     public void saveRssFeeds() {
-        saveRssFeeds(TAG_ALL_RSS);
-        saveRssFeeds(TAG_IT_RSS);
+        saveRssFeeds(TAG_RSS_ALL);
+        saveRssFeeds(TAG_RSS_IT);
     }
 
     private void saveRssFeeds(final String tag) {

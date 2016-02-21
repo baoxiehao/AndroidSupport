@@ -1,8 +1,0 @@
-http://www.ifanr.com/feed
-http://www.36kr.com/feed/
-http://www.zhihu.com/rss
-http://www.androidweekly.cn/rss/
-http://www.williamlong.info/rss.xml
-http://cn.engadget.com/rss.xml
-http://lucifr.com/atom.xml
-http://drakeet.me/feed
