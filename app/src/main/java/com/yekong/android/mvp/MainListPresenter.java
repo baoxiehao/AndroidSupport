@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.yekong.android.cache.Provider;
+import com.yekong.android.rss.RssConfig;
 import com.yekong.android.rss.RssEntry;
 import com.yekong.android.rss.RssFeed;
 import com.yekong.android.util.Logger;
@@ -26,22 +27,22 @@ public class MainListPresenter extends MvpBasePresenter<MainListView> {
 
     private static final String TAG = "MainListPresenter";
 
-    private String mTag;
+    private RssConfig.Category mCategory;
 
-    public MainListPresenter(final String tag) {
-        mTag = tag;
+    public MainListPresenter(final RssConfig.Category category) {
+        mCategory = category;
     }
 
     @Override
     public void attachView(MainListView view) {
         super.attachView(view);
-        Logger.d(TAG, String.format("attachView: tag=%s", mTag.toUpperCase()));
+        Logger.d(TAG, String.format("attachView: tag=%s", mCategory.name.toUpperCase()));
     }
 
     @Override
     public void detachView(boolean retainInstance) {
         super.detachView(retainInstance);
-        Logger.d(TAG, String.format("detachView: tag=%s", mTag.toUpperCase()));
+        Logger.d(TAG, String.format("detachView: tag=%s", mCategory.name.toUpperCase()));
     }
 
     public void saveData(final Context context) {
@@ -50,11 +51,12 @@ public class MainListPresenter extends MvpBasePresenter<MainListView> {
 
     public void loadMainList(final Context context, final boolean pullToRefresh) {
         Provider.getInstance(context)
-                .rssFeeds(mTag)
+                .feedObservable(mCategory)
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        Logger.d(TAG, String.format("SUBSCRIBE: tag=%s, pull=%s", mTag.toUpperCase(), pullToRefresh));
+                        Logger.d(TAG, String.format("SUBSCRIBE: tag=%s, pull=%s",
+                                mCategory.name.toUpperCase(), pullToRefresh));
                         if (isViewAttached()) {
                             getView().setData(new ArrayList<RssEntry>());
                         }
@@ -63,7 +65,8 @@ public class MainListPresenter extends MvpBasePresenter<MainListView> {
                 .doOnUnsubscribe(new Action0() {
                     @Override
                     public void call() {
-                        Logger.d(TAG, String.format("UNSUBSCRIBE: tag=%s, pull=%s", mTag.toUpperCase(), pullToRefresh));
+                        Logger.d(TAG, String.format("UNSUBSCRIBE: tag=%s, pull=%s",
+                                mCategory.name.toUpperCase(), pullToRefresh));
                     }
                 })
                 .flatMap(new Func1<RssFeed, Observable<List<RssEntry>>>() {

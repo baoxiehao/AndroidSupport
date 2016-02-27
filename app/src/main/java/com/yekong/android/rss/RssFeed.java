@@ -12,6 +12,7 @@ public class RssFeed {
     public String link;
     public String description;
     public String lastBuildDate;
+    public String updateTime;
     public List<RssEntry> entries;
 
     @Override

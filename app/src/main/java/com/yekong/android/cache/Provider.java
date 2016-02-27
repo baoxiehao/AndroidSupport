@@ -3,8 +3,10 @@ package com.yekong.android.cache;
 import android.content.Context;
 
 import com.jakewharton.rxrelay.ReplayRelay;
+import com.yekong.android.rss.RssConfig;
 import com.yekong.android.rss.RssFactory;
 import com.yekong.android.rss.RssFeed;
+import com.yekong.android.util.DateUtils;
 import com.yekong.android.util.Logger;
 
 import java.util.HashMap;
@@ -29,18 +31,6 @@ public class Provider {
 
     private static Provider sInstance;
 
-    public static final String TAG_RSS_ALL = "all";
-    public static final String TAG_RSS_NEWS = "news";
-    public static final String TAG_RSS_IT = "it";
-    public static final String TAG_RSS_ART = "art";
-
-    private String[] TAGS = new String[] {
-            TAG_RSS_ALL,
-            TAG_RSS_NEWS,
-            TAG_RSS_IT,
-            TAG_RSS_ART,
-    };
-
     private Context mContext;
     private Map<String, ReplayRelay<RssFeed>> mReplayRssFeeds = new HashMap<>();
 
@@ -51,34 +41,32 @@ public class Provider {
         return sInstance;
     }
 
-    public Observable<RssFeed> rssFeeds(final String tag) {
-        switch (tag) {
-            case TAG_RSS_NEWS:
-            case TAG_RSS_IT:
-            case TAG_RSS_ART:
-                return mReplayRssFeeds.get(tag).toSerialized();
-            default:
-                return Observable.merge(
-                        mReplayRssFeeds.get(tag).toSerialized(),
-                        mReplayRssFeeds.get(TAG_RSS_NEWS).toSerialized(),
-                        mReplayRssFeeds.get(TAG_RSS_IT).toSerialized(),
-                        mReplayRssFeeds.get(TAG_RSS_ART).toSerialized());
-        }
+    public Observable<RssFeed> feedObservable(final RssConfig.Category category) {
+        return mReplayRssFeeds.get(category.name).toSerialized();
     }
 
     private Provider(Context context) {
         mContext = context;
-        for (String tag : TAGS) {
-            mReplayRssFeeds.put(tag, ReplayRelay.<RssFeed>create());
-        }
-        for (String tag: TAGS) {
-            subscribeRssFeeds(tag);
-        }
+        RssFactory.getInstance(context).categoryObservable()
+                .doOnNext(new Action1<RssConfig.Category>() {
+                    @Override
+                    public void call(RssConfig.Category category) {
+                        mReplayRssFeeds.put(category.name, ReplayRelay.<RssFeed>create());
+                        subscribeRssFeeds(category);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RssConfig.Category>() {
+                    @Override
+                    public void call(RssConfig.Category category) {
+                        Logger.d(TAG, RssConfig.Category.toJson(category));
+                    }
+                });
     }
 
-    private void subscribeRssFeeds(final String tag) {
-        RssFactory.parseRssFeed(mContext, tag)
-                .startWith(restoreRssFeeds(tag))
+    private void subscribeRssFeeds(final RssConfig.Category category) {
+        RssFactory.getInstance(mContext).feedObservable(mContext, category)
+                .startWith(restoreRssFeeds(category.name))
                 .subscribeOn(Schedulers.io())
                 .filter(new Func1<RssFeed, Boolean>() {
                     @Override
@@ -89,19 +77,19 @@ public class Provider {
                 .subscribe(new Action1<RssFeed>() {
                     @Override
                     public void call(RssFeed rssFeed) {
-                        mReplayRssFeeds.get(tag).call(rssFeed);
+                        mReplayRssFeeds.get(category.name).call(rssFeed);
                         Logger.d(TAG, String.format("%s next: title=%s, size=%d",
-                                tag.toUpperCase(), rssFeed.title, rssFeed.entries.size()));
+                                category.name.toUpperCase(), rssFeed.title, rssFeed.entries.size()));
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        Logger.e(TAG, String.format("%s error", tag.toUpperCase()), throwable);
+                        Logger.e(TAG, String.format("%s error", category.name.toUpperCase()), throwable);
                     }
                 }, new Action0() {
                     @Override
                     public void call() {
-                        Logger.d(TAG, String.format("%s done", tag.toUpperCase()));
+                        Logger.d(TAG, String.format("%s done", category.name.toUpperCase()));
                     }
                 });
     }
@@ -134,6 +122,7 @@ public class Provider {
 //                        }))
 
     public void saveRssFeed(RssFeed rssFeed) {
+        rssFeed.updateTime = DateUtils.getCurrentDate();
         RxStore.withContext(mContext)
                 .in("rss")
                 .using(new GsonConverter())
@@ -150,22 +139,42 @@ public class Provider {
     }
 
     public Observable<RssFeed> restoreRssFeed(final String url) {
-        Logger.d(TAG, String.format("restoreRssFeed: url=%s", url));
         return RxStore.withContext(mContext)
                 .in("rss")
                 .using(new GsonConverter())
                 .get("feed" + url.hashCode(), RssFeed.class)
-                .subscribeOn(Schedulers.io());
+                .subscribeOn(Schedulers.io())
+                .filter(new Func1<RssFeed, Boolean>() {
+                    @Override
+                    public Boolean call(RssFeed rssFeed) {
+                        boolean outdated = DateUtils.isOutdated(rssFeed.updateTime,
+                                30 * android.text.format.DateUtils.SECOND_IN_MILLIS);
+                        Logger.d(TAG, String.format("restoreRssFeed: url=%s, updateTime=%s, outdated=%s",
+                                url, rssFeed.updateTime, outdated));
+                        return !outdated;
+                    }
+                })
+                .doOnCompleted(new Action0() {
+                    @Override
+                    public void call() {
+                        Logger.d(TAG, String.format("restoreRssFeed: url=%s", url));
+                    }
+                });
     }
 
     public void saveRssFeeds() {
-        saveRssFeeds(TAG_RSS_ALL);
-        saveRssFeeds(TAG_RSS_IT);
+        RssFactory.getInstance(mContext).categoryObservable()
+                .subscribe(new Action1<RssConfig.Category>() {
+                    @Override
+                    public void call(RssConfig.Category category) {
+                        saveRssFeeds(category);
+                    }
+                });
     }
 
-    private void saveRssFeeds(final String tag) {
-        Logger.d(TAG, String.format("saveRssFeeds: tag=%s", tag.toUpperCase()));
-        rssFeeds(tag)
+    private void saveRssFeeds(final RssConfig.Category category) {
+        Logger.d(TAG, String.format("saveRssFeeds: tag=%s", category.name.toUpperCase()));
+        feedObservable(category)
                 .toList()
                 .subscribe(new Action1<List<RssFeed>>() {
                     @Override
@@ -173,7 +182,7 @@ public class Provider {
                         RxStore.withContext(mContext)
                                 .in("rss")
                                 .using(new GsonConverter())
-                                .putList(tag, rssFeeds, RssFeed.class)
+                                .putList(category.name, rssFeeds, RssFeed.class)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Action1<List<RssFeed>>() {

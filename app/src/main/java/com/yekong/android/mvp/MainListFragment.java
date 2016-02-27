@@ -15,6 +15,7 @@ import com.hannesdorfmann.mosby.mvp.viewstate.lce.data.RetainingLceViewState;
 import com.skocken.efficientadapter.lib.adapter.EfficientAdapter;
 import com.skocken.efficientadapter.lib.adapter.EfficientRecyclerAdapter;
 import com.yekong.android.R;
+import com.yekong.android.rss.RssConfig;
 import com.yekong.android.rss.RssEntry;
 import com.yekong.android.util.Logger;
 import com.yekong.android.util.UseCase;
@@ -35,7 +36,7 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
 
     private static final String TAG = "MainListFragment";
 
-    private static final String ARG_TAG = "ARG_TAG";
+    private static final String ARG_CATEGORY = "ARG_CATEGORY";
 
     @Bind(R.id.recyclerView)
     RecyclerView mRecyclerView;
@@ -45,11 +46,11 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
 
     EfficientRecyclerAdapter<RssEntry> mAdapter;
 
-    String mTag;
+    RssConfig.Category mCategory;
 
-    public static MainListFragment newInstance(String tag) {
+    public static MainListFragment newInstance(RssConfig.Category category) {
         Bundle args = new Bundle();
-        args.putString(ARG_TAG, tag);
+        args.putString(ARG_CATEGORY, RssConfig.Category.toJson(category));
         MainListFragment fragment = new MainListFragment();
         fragment.setArguments(args);
         return fragment;
@@ -61,7 +62,7 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
         // Enable retaining presenter / view state
         setRetainInstance(true);
         Bundle args = getArguments();
-        mTag = args.getString(ARG_TAG);
+        mCategory = RssConfig.Category.fromJson(args.getString(ARG_CATEGORY));
     }
 
     @Override
@@ -79,7 +80,7 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Logger.d(TAG, String.format("onViewCreated: tag=%s", mTag.toUpperCase()));
+        Logger.d(TAG, String.format("onViewCreated: tag=%s", mCategory.name.toUpperCase()));
         ButterKnife.bind(this, view);
         this.contentView.setOnRefreshListener(this);
         this.errorView.setOnClickListener(this);
@@ -95,7 +96,7 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
 
     @Override
     public MainListPresenter createPresenter() {
-        return new MainListPresenter(mTag);
+        return new MainListPresenter(mCategory);
     }
 
     @Override
@@ -128,21 +129,21 @@ public class MainListFragment extends MvpLceViewStateFragment<SwipeRefreshLayout
     @Override
     public void showContent() {
         super.showContent();
-        Logger.d(TAG, String.format("showContent: tag=%s", mTag.toUpperCase()));
+        Logger.d(TAG, String.format("showContent: tag=%s", mCategory.name.toUpperCase()));
         this.contentView.setRefreshing(false);
     }
 
     @Override
     public void showLoading(boolean pullToRefresh) {
         super.showLoading(pullToRefresh);
-        Logger.d(TAG, String.format("showLoading: tag=%s", mTag.toUpperCase()));
+        Logger.d(TAG, String.format("showLoading: tag=%s", mCategory.name.toUpperCase()));
         this.contentView.setRefreshing(pullToRefresh);
     }
 
     @Override
     public void showError(Throwable e, boolean pullToRefresh) {
         super.showError(e, pullToRefresh);
-        Logger.d(TAG, String.format("showError: tag=%s", mTag.toUpperCase()));
+        Logger.d(TAG, String.format("showError: tag=%s", mCategory.name.toUpperCase()));
         this.contentView.setRefreshing(false);
     }
 

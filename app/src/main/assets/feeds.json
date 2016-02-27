@@ -1,0 +1,323 @@
+{
+  "categories": [
+    {
+      "name": "All",
+      "tags": [
+        "Info",
+        "Knowledge",
+        "Media",
+        "Blog",
+        "Daily",
+        "Fun",
+        "Dev",
+        "Travel",
+        "Design",
+        "Apple",
+        "Literature",
+        "Photo"
+      ]
+    },
+    {
+      "name": "News",
+      "tags": [
+        "Info",
+        "Knowledge"
+      ]
+    },
+    {
+      "name": "Dev",
+      "tags": [
+        "Dev",
+        "Blog"
+      ]
+    },
+    {
+      "name": "Photo",
+      "tags": [
+        "Photo"
+      ]
+    }
+  ],
+  "feeds": [
+    {
+      "tag": "Info",
+      "title": "爱范儿",
+      "link": "http://www.ifanr.com/feed"
+    },
+    {
+      "tag": "Info",
+      "title": "36氪",
+      "link": "http://www.36kr.com/feed/"
+    },
+    {
+      "tag": "Info",
+      "title": "极客范",
+      "link": "http://www.geekfan.net/feed/"
+    },
+    {
+      "tag": "Info",
+      "title": "Engadget",
+      "link": "http://cn.engadget.com/rss.xml"
+    },
+    {
+      "tag": "Knowledge",
+      "title": "知乎",
+      "link": "whttp://www.zhihu.com/rss"
+    },
+    {
+      "tag": "Knowledge",
+      "title": "知乎每日精选",
+      "link": "http://zhihurss.miantiao.me/dailyrss"
+    },
+    {
+      "tag": "Media",
+      "title": "南都周刊",
+      "link": "http://www.nbweekly.com/rss/smw/"
+    },
+    {
+      "tag": "Info",
+      "title": "CnBeta",
+      "link": "http://rss.cnbeta.com/rss"
+    },
+    {
+      "tag": "Blog",
+      "title": "异次元软件世界",
+      "link": "http://feed.iplaysoft.com/"
+    },
+    {
+      "tag": "Info",
+      "title": "蜂客网",
+      "link": "http://www.phonekr.com/feed/"
+    },
+    {
+      "tag": "Info",
+      "title": "同步控",
+      "link": "http://www.syncoo.com/feed"
+    },
+    {
+      "tag": "Daily",
+      "title": "什么值得买",
+      "link": "http://feed.smzdm.com/"
+    },
+    {
+      "tag": "Info",
+      "title": "虎嗅网",
+      "link": "http://www.huxiu.com/rss/0.xml"
+    },
+    {
+      "tag": "Fun",
+      "title": "抽屉",
+      "link": "http://dig.chouti.com/feed.xml"
+    },
+    {
+      "tag": "Info",
+      "title": "爱活网",
+      "link": "http://feed.evolife.cn"
+    },
+    {
+      "tag": "Dev",
+      "title": "外刊IT评论",
+      "link": "http://rss.aqee.net"
+    },
+    {
+      "tag": "Travel",
+      "title": "马蜂窝热贴",
+      "link": "http://www.feed43.com/mafengwohot.xml"
+    },
+    {
+      "tag": "Info",
+      "title": "酷壳",
+      "link": "http://coolshell.cn/feed"
+    },
+    {
+      "tag": "Info",
+      "title": "EyeDesync",
+      "link": "http://eyedesyn.com/feed/"
+    },
+    {
+      "tag": "Info",
+      "title": "Flipboard Engineering",
+      "link": "http://engineering.flipboard.com/feed"
+    },
+    {
+      "tag": "Fun",
+      "title": "爱稀奇",
+      "link": "http://www.ixiqi.com/feed"
+    },
+    {
+      "tag": "Design",
+      "title": "腾讯CDC设计",
+      "link": "http://cdc.tencent.com/?feed=rss2"
+    },
+    {
+      "tag": "Blog",
+      "title": "Fenng",
+      "link": "http://dbanotes.net/feed"
+    },
+    {
+      "tag": "Fun",
+      "title": "煎蛋",
+      "link": "http://jandan.net/feed"
+    },
+    {
+      "tag": "Apple",
+      "title": "SixColors",
+      "link": "http://feedpress.me/sixcolors?type=xml"
+    },
+    {
+      "tag": "Blog",
+      "title": "木遥的窗子",
+      "link": "http://blog.farmostwood.net/feed"
+    },
+    {
+      "tag": "Info",
+      "title": "极客公园",
+      "link": "http://www.geekpark.net/rss"
+    },
+    {
+      "tag": "Blog",
+      "title": "柴静 看见",
+      "link": "http://blog.sina.com.cn/rss/1219548027.xml"
+    },
+    {
+      "tag": "Knowledge",
+      "title": "科学松鼠会",
+      "link": "http://songshuhui.net/feed"
+    },
+    {
+      "tag": "Design",
+      "title": "Smashing Magazine",
+      "link": "https://www.smashingmagazine.com/feed/"
+    },
+    {
+      "tag": "Blog",
+      "title": "Edwin Chen",
+      "link": "http://blog.echen.me/feeds/all.rss.xml"
+    },
+    {
+      "tag": "Fun",
+      "title": "Sankaku Complex",
+      "link": "http://www.sankakucomplex.com/feed/"
+    },
+    {
+      "tag": "Blog",
+      "title": "叫兽与你同在",
+      "link": "http://blog.sina.com.cn/rss/1691761292.xml"
+    },
+    {
+      "tag": "Blog",
+      "title": "刘未鹏 思维改变生活",
+      "link": "http://mindhacks.cn/feed/"
+    },
+    {
+      "tag": "Apple",
+      "title": "MacStories",
+      "link": "http://hanhanone.sinaapp.com/feed/dajia"
+    },
+    {
+      "tag": "Literature",
+      "title": "韩寒 一个",
+      "link": "http://onehd.herokuapp.com/"
+    },
+    {
+      "tag": "Blog",
+      "title": "月光博客",
+      "link": "http://www.williamlong.info/rss.xml"
+    },
+    {
+      "tag": "Blog",
+      "title": "Lucifr",
+      "link": "http://lucifr.com/atom.xml"
+    },
+    {
+      "tag": "Media",
+      "title": "壹读",
+      "link": "http://yidu.im/rss"
+    },
+    {
+      "tag": "Design",
+      "title": "优设",
+      "link": "http://www.uisdc.com/feed"
+    },
+    {
+      "tag": "Design",
+      "title": "A Day Magazine",
+      "link": "http://www.adaymag.com/feed/"
+    },
+    {
+      "tag": "Photo",
+      "title": "摄影世界",
+      "link": "http://www.photoworld.com.cn/feed"
+    },
+    {
+      "tag": "Photo",
+      "title": "Unsplash",
+      "link": "https://unsplash.com/rss"
+    },
+    {
+      "tag": "Info",
+      "title": "理想生活实验室",
+      "link": "http://www.toodaylab.com/feed"
+    },
+    {
+      "tag": "Photo",
+      "title": "摄影之友",
+      "link": "http://www.feed43.com/potomen.xml"
+    },
+    {
+      "tag": "Photo",
+      "title": "套图屋",
+      "link": "http://www.feed43.com/taotuwubeauty.xml"
+    },
+    {
+      "tag": "Photo",
+      "title": "蜂鸟 她影像",
+      "link": "http://www.feed43.com/fengniaofigures.xml"
+    },
+    {
+      "tag": "Blog",
+      "title": "技术小黑屋",
+      "link": "http://www.feed43.com/droidyue.xml"
+    },
+    {
+      "tag": "Dev",
+      "title": "稀土掘金",
+      "link": "http://gold.xitu.io/rss"
+    },
+    {
+      "tag": "Dev",
+      "title": "Android Weekly",
+      "link": "http://www.androidweekly.cn/rss/"
+    },
+    {
+      "tag": "Blog",
+      "title": "阮一峰的网络日志",
+      "link": "http://www.ruanyifeng.com/blog/atom.xml"
+    },
+    {
+      "tag": "Blog",
+      "title": "Drakeet的个人博客",
+      "link": "http://drakeet.me/feed"
+    },
+    {
+      "tag": "Dev",
+      "title": "伯乐在线",
+      "link": "http://www.feed43.com/jobbole.xml"
+    },
+    {
+      "tag": "Dev",
+      "title": "Android Dev Digest",
+      "link": "http://www.feed43.com/androiddevdigest.xml"
+    },
+    {
+      "tag": "Dev",
+      "title": "Github Trending",
+      "link": "http://www.feed43.com/githubtrend.xml"
+    },
+    {
+      "tag": "Dev",
+      "title": "Reddit Daily Programmer",
+      "link": "http://www.feed43.com/redditdailyprogrammer.xml"
+    }
+  ]
+}

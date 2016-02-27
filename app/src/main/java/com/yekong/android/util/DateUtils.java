@@ -52,7 +52,7 @@ public class DateUtils {
         return 0;
     }
 
-    private static String getCurrentDate() {
+    public static String getCurrentDate() {
         SimpleDateFormat SDF = new SimpleDateFormat("yyyy.MM.dd HH:mm");
         Date date = new Date();
         date.setTime(System.currentTimeMillis());

@@ -9,23 +9,33 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.yekong.android.R;
-import com.yekong.android.cache.Provider;
 import com.yekong.android.mvp.MainListFragment;
+import com.yekong.android.rss.RssConfig;
+import com.yekong.android.rss.RssFactory;
+import com.yekong.android.util.Logger;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends RxAppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final String TAG = "MainActivity";
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
@@ -64,17 +74,36 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initViewPager() {
-        if (mViewPager != null) {
-            FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
-            adapter.addFragment(MainListFragment.newInstance(Provider.TAG_RSS_ALL), getString(R.string.tab_all));
-            adapter.addFragment(MainListFragment.newInstance(Provider.TAG_RSS_NEWS), getString(R.string.tab_news));
-            adapter.addFragment(MainListFragment.newInstance(Provider.TAG_RSS_IT), getString(R.string.tab_it));
-            adapter.addFragment(MainListFragment.newInstance(Provider.TAG_RSS_ART), getString(R.string.tab_design));
-            mViewPager.setAdapter(adapter);
-
-            TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-            tabLayout.setupWithViewPager(mViewPager);
-        }
+        final FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
+        RssFactory.getInstance(this).categoryObservable()
+                .toList()
+                .filter(new Func1<List<RssConfig.Category>, Boolean>() {
+                    @Override
+                    public Boolean call(List<RssConfig.Category> categories) {
+                        return !categories.isEmpty();
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<RssConfig.Category>>() {
+                    @Override
+                    public void call(List<RssConfig.Category> categories) {
+                        for (RssConfig.Category category : categories) {
+                            adapter.addFragment(MainListFragment.newInstance(category), category.name);
+                        }
+                        Logger.d(TAG, "initViewPager next: size=" + categories.size());
+                        if (mViewPager != null) {
+                            mViewPager.setAdapter(adapter);
+                            TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+                            tabLayout.setupWithViewPager(mViewPager);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Logger.e(TAG, "initViewPager error", throwable);
+                    }
+                });
     }
 
     @OnClick(R.id.fab)
