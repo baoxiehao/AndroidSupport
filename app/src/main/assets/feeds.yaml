@@ -190,3 +190,6 @@ feeds:
   - tag: Dev
     title: Reddit Daily Programmer
     link: http://www.feed43.com/redditdailyprogrammer.xml
+  - tag: Dev
+    title: Gank.io
+    link: feed://gank.io/feed
